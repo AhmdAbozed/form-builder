@@ -1,0 +1,63 @@
+@keyframes grow {
+    from {
+        height: 0;
+    }
+
+    to {
+        height: 8rem;
+    }
+}
+
+@keyframes opacity {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 90%;
+    }
+}
+
+
+.formElement {
+    height: 8rem;
+    margin: var(--boundmargin) 0;
+    border: 0.1rem solid rgb(202, 202, 202);
+    position: relative;
+    animation-name: grow;
+    animation-duration: 0.3s;
+}
+
+.boundary {
+    position: absolute;
+    width: 100%;
+    /*
+    50% height doesn't include borders, even with border-box
+    so i add it to height, and offset it with translateY
+    */
+    height: calc(50% + var(--boundmargin) + var(--elementborder));
+}
+
+.upperbound {
+    --boundtranslate: calc(var(--boundmargin) * -1 - var(--elementborder));
+    transform: translateY(var(--boundtranslate));
+
+}
+
+.lowerbound {
+    bottom: 0;
+    --boundtranslate: calc(var(--boundmargin) + var(--elementborder));
+    transform: translateY(var(--boundtranslate));
+}
+
+.upperbound.highlight {
+    border-top: 0.5rem solid rgb(126, 126, 126);
+    animation-name: opacity;
+    animation-duration: 0.1s;
+}
+
+.lowerbound.highlight {
+    border-bottom: 0.5rem solid rgb(126, 126, 126);
+    animation-name: opacity;
+    animation-duration: 0.1s;
+}

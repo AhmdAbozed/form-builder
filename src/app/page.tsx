@@ -1,95 +1,48 @@
-import Image from 'next/image'
-import styles from './page.module.css'
-
+"use client"
+import styles from '../css/page.module.css'
+import Sidebar from '../components/sidebar';
+import { useState } from 'react';
+import FormElement from '../components/formElement'
 export default function Home() {
+
+  const [formElements, setformElements] = useState<Array<any>>([]);
+
+
+  const dropzone = (e: React.DragEvent<HTMLElement>) => {
+   
+    e.preventDefault()
+    const target = e.target as HTMLElement
+    const parentId = Number(target.parentElement?.id)
+    const parentIndex = formElements.findIndex((e) => e.props.id == parentId)
+    const newElement = <FormElement id={formElements.length} key={formElements.length} />
+
+    if (target.className.includes("upperbound")) {
+      formElements.splice(parentIndex, 0, newElement)
+      setformElements([...formElements])
+    } 
+    
+    else if (target.className.includes("lowerbound")) {
+      formElements.splice(parentIndex + 1, 0, newElement)
+      setformElements([...formElements])
+    }
+    
+    else {
+      const data = e.dataTransfer.getData("text/plain");
+      console.log(data)
+      setformElements(formElements.concat([newElement]))
+    }
+  }
+
+
+
   return (
     <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>src/app/page.tsx</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
-
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore the Next.js 13 playground.</p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
+      <section className={styles.formWrapper} onDragOver={(e) => { e.preventDefault() }} onDrop={dropzone}>
+        {formElements}
+      </section>
+      <section className={styles.sidebarWrapper}>
+        <Sidebar />
+      </section>
     </main>
   )
 }

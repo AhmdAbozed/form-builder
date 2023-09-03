@@ -1,0 +1,46 @@
+:root {
+ --main-background: rgb(241, 253, 255);
+ --boundmargin: 0.5rem;
+ --elementborder: 0.1rem
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    
+  }
+}
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+html,
+body {
+  max-width: 100vw;
+  overflow-x: hidden;
+  background-color: rgb(215, 250, 255);
+}
+/*
+body {
+  color: rgb(var(--foreground-rgb));
+  background: linear-gradient(
+      to bottom,
+      transparent,
+      rgb(var(--background-end-rgb))
+    )
+    rgb(var(--background-start-rgb));
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+@media (prefers-color-scheme: dark) {
+  html {
+    color-scheme: dark;
+  }
+}
+*/

@@ -1,0 +1,22 @@
+
+.main {
+  display: grid;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6rem;
+  grid-template-columns: 3fr 1fr;
+  grid-template-areas: "l f";
+}
+
+.formWrapper{
+  background-color: var(--main-background);
+  grid-area: l;
+  min-height: 15rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebarWrapper{
+  background-color: var(--main-background);
+  grid-area: f;
+}

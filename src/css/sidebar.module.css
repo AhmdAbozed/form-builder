@@ -1,0 +1,16 @@
+#wrapper{
+    display: flex;
+    flex-direction: column;
+    
+  background-color: var(--main-background);
+}
+
+.sidebar_element{
+  height: 2rem;
+  text-align: center;
+  user-select: none;
+}
+
+.sidebar_button{
+  height: 2rem;
+}
