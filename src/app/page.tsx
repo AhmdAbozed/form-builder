@@ -3,46 +3,44 @@ import styles from '../css/page.module.css'
 import Sidebar from '../components/sidebar';
 import { useState } from 'react';
 import FormElement from '../components/formElement'
+
+//without any I get Dispatch<Setstate...> at toggle. Use an interface with boolean and dispatch also works
+/*export const draggingContext = createContext<any>({
+  draggingState: false,
+
+  toggleDragging: () => { }
+})
+*/
 export default function Home() {
 
-  const [formElements, setformElements] = useState<Array<any>>([]);
+  const [draggingState, toggleDragging] = useState(false);
+  const [formElements, setFormElements] = useState<Array<any>>([]);
 
 
   const dropzone = (e: React.DragEvent<HTMLElement>) => {
-   
-    e.preventDefault()
-    const target = e.target as HTMLElement
-    const parentId = Number(target.parentElement?.id)
-    const parentIndex = formElements.findIndex((e) => e.props.id == parentId)
-    const newElement = <FormElement id={formElements.length} key={formElements.length} />
 
-    if (target.className.includes("upperbound")) {
-      formElements.splice(parentIndex, 0, newElement)
-      setformElements([...formElements])
-    } 
-    
-    else if (target.className.includes("lowerbound")) {
-      formElements.splice(parentIndex + 1, 0, newElement)
-      setformElements([...formElements])
-    }
-    
-    else {
-      const data = e.dataTransfer.getData("text/plain");
-      console.log(data)
-      setformElements(formElements.concat([newElement]))
-    }
+    e.preventDefault()
+    console.log("parent drop"+formElements.length)
+    const target = e.target as HTMLElement
+    const newElement = <FormElement id={formElements.length} key={formElements.length} formElements={formElements} setFormElements={setFormElements} />
+    formElements.push(newElement)
+    setFormElements([...formElements])
   }
 
 
 
   return (
+
     <main className={styles.main}>
+      <script src="DragDropTouch.js"></script>
       <section className={styles.formWrapper} onDragOver={(e) => { e.preventDefault() }} onDrop={dropzone}>
         {formElements}
       </section>
       <section className={styles.sidebarWrapper}>
-        <Sidebar />
+        <Sidebar toggleDragging={toggleDragging} />
       </section>
+
+
     </main>
   )
 }

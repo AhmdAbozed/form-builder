@@ -1,63 +1,76 @@
 @keyframes grow {
     from {
-        height: 0;
+        min-height: 0;
     }
 
     to {
-        height: 8rem;
+        min-height: 8rem;
     }
 }
 
 @keyframes opacity {
-    from {
+    from{
         opacity: 0;
     }
-
-    to {
-        opacity: 90%;
+    to{
+        opacity: 50%;
     }
 }
 
 
 .formElement {
-    height: 8rem;
-    margin: var(--boundmargin) 0;
+    padding: var(--boundmargin) 0;
+    position: relative;
+   border: none;
+}
+
+.formElementBody {
+    min-height: 8rem;
     border: 0.1rem solid rgb(202, 202, 202);
     position: relative;
     animation-name: grow;
     animation-duration: 0.3s;
+    z-index: 1;
+    position: relative;
 }
 
-.boundary {
+.lowerHighlight::after, .upperHighlight::before{
+    content: "";
+    z-index: 3;
+    display: block;
     position: absolute;
-    width: 100%;
-    /*
-    50% height doesn't include borders, even with border-box
-    so i add it to height, and offset it with translateY
-    */
-    height: calc(50% + var(--boundmargin) + var(--elementborder));
+    background-color: rgb(126, 126, 126);
+    width: calc(100% - 1rem);
+    height: 0.3rem;
+    border-radius: 5rem;
+    animation-name: opacity;
+    animation-duration: 0.5s;
+    animation-fill-mode: forwards;
 }
-
-.upperbound {
-    --boundtranslate: calc(var(--boundmargin) * -1 - var(--elementborder));
-    transform: translateY(var(--boundtranslate));
-
-}
-
-.lowerbound {
+.formElement.lowerHighlight::after {
     bottom: 0;
-    --boundtranslate: calc(var(--boundmargin) + var(--elementborder));
-    transform: translateY(var(--boundtranslate));
+    transform: translateY(calc(var(--boundmargin) / 2)) translateX(0.5rem);
+    
 }
 
-.upperbound.highlight {
-    border-top: 0.5rem solid rgb(126, 126, 126);
-    animation-name: opacity;
-    animation-duration: 0.1s;
+.formElement.upperHighlight::before {
+    transform: translate(0.5rem, calc(var(--boundmargin) / -1));
 }
 
-.lowerbound.highlight {
-    border-bottom: 0.5rem solid rgb(126, 126, 126);
-    animation-name: opacity;
-    animation-duration: 0.1s;
+
+.subElementsWrapper {
+    display: flex;
+    flex-direction: column;
+}
+
+.subElementsBody{
+    display: flex;
+    flex-direction: column;
+    align-items: baseline;
+}
+
+.dragDiv{
+    text-align: center;
+    cursor:grab;
+    user-select: none;
 }
