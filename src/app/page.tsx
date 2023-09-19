@@ -11,33 +11,53 @@ import FormElement from '../components/formElement'
   toggleDragging: () => { }
 })
 */
+export type subElementObj = {
+
+  id?: Number;
+  name?: string;
+
+}
+
+export type formElementObj = {
+  id: string;
+  type: 'checkbox' | 'text' | 'select'
+  subElements: Array<subElementObj>;
+
+}
+
 export default function Home() {
 
-  const [draggingState, toggleDragging] = useState(false);
   const [formElements, setFormElements] = useState<Array<any>>([]);
-
 
   const dropzone = (e: React.DragEvent<HTMLElement>) => {
 
     e.preventDefault()
-    console.log("parent drop"+formElements.length)
-    const target = e.target as HTMLElement
-    const newElement = <FormElement id={formElements.length} key={formElements.length} formElements={formElements} setFormElements={setFormElements} />
-    formElements.push(newElement)
-    setFormElements([...formElements])
+    console.log("parent drop" + formElements.length)
+    const type = e.dataTransfer.getData("type")
+    if (type == 'checkbox' || type == 'text' || type == 'select') {
+      const newElement: formElementObj = { id: crypto.randomUUID(), subElements: [], type: type }
+      setFormElements(formElements.concat([newElement]))
+      console.log("parent drop end" + formElements.length)
+    }
   }
 
-
+  //map components instead of storing components in state, so that properties(formElements specifically) aren't stale
+  const renderFormELements = () => {
+    const formComponents = formElements.map((element: formElementObj) => {
+      return <FormElement id={element.id} key={element.id} formElements={formElements} setFormElements={setFormElements} subElements={element.subElements} type={element.type} />
+    })
+    return formComponents
+  }
 
   return (
 
     <main className={styles.main}>
       <script src="DragDropTouch.js"></script>
       <section className={styles.formWrapper} onDragOver={(e) => { e.preventDefault() }} onDrop={dropzone}>
-        {formElements}
+        {renderFormELements()}
       </section>
       <section className={styles.sidebarWrapper}>
-        <Sidebar toggleDragging={toggleDragging} />
+        <Sidebar />
       </section>
 
 

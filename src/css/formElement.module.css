@@ -1,10 +1,12 @@
 @keyframes grow {
     from {
+        max-height: 0;
         min-height: 0;
     }
 
     to {
         min-height: 8rem;
+        max-height: 80rem;
     }
 }
 
@@ -44,7 +46,7 @@
     height: 0.3rem;
     border-radius: 5rem;
     animation-name: opacity;
-    animation-duration: 0.5s;
+    animation-duration: 0.7s;
     animation-fill-mode: forwards;
 }
 .formElement.lowerHighlight::after {

@@ -1,13 +1,15 @@
 "use client"
 import styles from '../css/formElement.module.css'
-import React, { SetStateAction, useEffect, useState, Dispatch } from 'react';
-const FormElement = (props: { id: number; formElements: any; setFormElements: Dispatch<SetStateAction<any[]>> }) => {
+import React, { SetStateAction, useState, Dispatch } from 'react';
+import SubElement from './subElement'
+import { formElementObj, subElementObj } from '@/app/page';
+const FormElement = (props: { id: string; formElements: any; setFormElements: Dispatch<SetStateAction<any[]>>; subElements: Array<any>; type: 'checkbox' | 'text' | 'select' }) => {
 
-    const [subElements, setSubElements] = useState<Array<any>>([]);
 
+    const [subElements, setSubElements] = useState<Array<any>>(props.subElements);
+    //console.log(subElements)
     const zoneDragOver = (e: React.DragEvent<HTMLElement>) => {
 
-        const x = e.pageX - e.currentTarget.offsetLeft;
         const y = e.pageY - e.currentTarget.offsetTop;
         const currentTarget = e.currentTarget as HTMLElement
 
@@ -49,69 +51,78 @@ const FormElement = (props: { id: number; formElements: any; setFormElements: Di
     }
 
     const zoneDragDrop = (e: React.DragEvent<HTMLElement>) => {
+        console.log("formElements: " + props.formElements.length)
         e.preventDefault();
         e.stopPropagation(); //stops event from bubbling to parent and triggering drop twice
 
+        //reset highlights if any before processing 
         e.currentTarget.classList.remove(styles["upperHighlight"])
         e.currentTarget.classList.remove(styles["lowerHighlight"])
 
         const currentTarget = e.currentTarget as HTMLElement
         const formElements = props.formElements;
 
-        const currentIndex = formElements.findIndex((e: any) => e.props.id == Number(currentTarget.id))
-        const newElement = <FormElement id={formElements.length} key={formElements.length} formElements={formElements} setFormElements={props.setFormElements} />
 
+        //remove original formelement when dragged to new position 
+        const draggedElementId = e.dataTransfer.getData("id")
+        if (draggedElementId) {
+            console.log("oldExists")
+            const oldElementIndex = formElements.findIndex((element: formElementObj) => element.id == draggedElementId)
+            formElements.splice(oldElementIndex, 1)
+        }
+
+        //Used to determine whether element is dropped near the top or bottom
         const y = e.pageY - e.currentTarget.offsetTop;
+
+        //index of dropped-on element, to see where to place new element
+        const currentIndex = formElements.findIndex((e: formElementObj) => e.id == currentTarget.id)
+
+        //New Element to insert
+        let newElement = { id: crypto.randomUUID(), subElements: JSON.parse(e.dataTransfer.getData("text/plain")) }
 
         if (y <= (currentTarget.getBoundingClientRect().height) / 2) {
             formElements.splice(currentIndex, 0, newElement)
-            console.log(formElements)
             props.setFormElements([...formElements])
             console.log("placed up?" + currentIndex)
         }
 
         else if (y > (currentTarget.getBoundingClientRect().height) / 2) {
             formElements.splice(currentIndex + 1, 0, newElement)
-            console.log(formElements)
             props.setFormElements([...formElements])
             console.log("placed down?" + currentIndex)
         }
+    }
 
-        else {
-            const data = e.dataTransfer.getData("text/plain");
-            formElements.push(newElement)
-            props.setFormElements([...formElements])
+    const addSubElementButton = () => {
+        if (props.type != 'text') {
+            return <button id="insertOption" onClick={() => {
+                const sub: subElementObj = { id: subElements.length }
+                subElements.push(sub)
+                setSubElements([...subElements])
+
+            }} value={""}>Add Option</button>
         }
-    }
+        else {
+            return <input type='text' placeholder='Answer goes here' disabled></input>
+        }
 
-    const addSubElement = () => {
-        const subElement = [
-            <div className={styles.checkboxWrapper} key={props.id}>
-                <input type='checkbox'>
-                </input>
-                <input type='text' placeholder='Enter Option..'></input>
-            </div>
-        ]
-        subElements.push(subElement)
-        setSubElements([...subElements])
     }
+    const renderSubElements = () => {
 
+        const subsArray: Array<any> = subElements.map((e: subElementObj) => {
+            return <SubElement id={Number(e.id)} value={e.name || ''} subElements={subElements} setSubElements={setSubElements} key={Number(e.id)} type={props.type} />
+        })
+
+        return subsArray
+    }
     const dragMouseDown = (e: any) => {
-        /*e.dataTransfer.setData("text/plain", "heyoo");
-        e.dataTransfer.dropEffect = "copy";
         e.currentTarget.parentElement?.setAttribute("draggable", "true")
-        const event = new DragEvent("dragstart", {
-            dataTransfer: e.dataTransfer
-        }) 
-        //e.currentTarget.parentElement?.dispatchEvent(event)
-        console.log("test")
-        */
-       e.currentTarget.parentElement?.setAttribute("draggable", "true")
     }
 
     const dragStartParent = (e: React.DragEvent<HTMLElement>) => {
-        console.log("CAUGHT")
-        e.dataTransfer.setData("text/plain", "heyoo");
+        e.dataTransfer.setData("text/plain", JSON.stringify(subElements));
+
+        e.dataTransfer.setData("id", props.id);
         e.dataTransfer.dropEffect = "copy";
     }
     return (<article className={styles.formElement} id={`${props.id}`} onDragStart={dragStartParent} onDragEnter={zoneDragEnter} onDragLeave={zoneDragLeave} onDrop={zoneDragDrop} onDragOver={zoneDragOver} draggable="false">
@@ -121,9 +132,9 @@ const FormElement = (props: { id: number; formElements: any; setFormElements: Di
 
             <div className={styles.subElementsWrapper}>
                 <form className={styles.subElementsBody}>
-                    {subElements}
+                    {renderSubElements()}
                 </form>
-                <button id="insertCheckbox" onClick={addSubElement} value={""}>Add Checkbox</button>
+                {addSubElementButton()}
             </div>
             <label htmlFor="checkbox">Checkers{props.id}</label>
 

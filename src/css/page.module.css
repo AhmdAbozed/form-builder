@@ -11,7 +11,7 @@
 .formWrapper{
   background-color: var(--main-background);
   grid-area: l;
-  min-height: 15rem;
+  min-height: 30rem;
   display: flex;
   flex-direction: column;
 }
