@@ -2,25 +2,29 @@
 import styles from '../css/formElement.module.css'
 import React, { SetStateAction, useEffect, useState, Dispatch } from 'react';
 const SubElement = (props: { id: number; value: string; subElements: Array<any>; setSubElements: Dispatch<SetStateAction<any[]>>; type: 'checkbox' | 'text' | 'select' }) => {
-    const renderInput = () => {
-        switch (props.type) {
-            case 'text': return <input type='text'></input>
+    const renderCheckbox = () => {
+        if(props.type == "checkbox"){
+            return <input type='checkbox' disabled></input>
         }
     }
     return (
-        <div className={styles.checkboxWrapper} key={props.id}>
-            <input type='text' placeholder='Enter Option..' value={props.value} onChange={(e: any) => {
+        <li className={styles.subElement} key={props.id}>
+            {renderCheckbox()}
+            <input className={styles.subElementInput} type='text' placeholder='Enter Option..' value={props.value} onChange={(e: any) => {
                 const newSubs = props.subElements.map((sub) => {
-                    console.log("CHANGED SUB NAME" + props.id + " " + sub.id)
+                    console.log("CHANGED SUBELEMENT NAME" + props.id + " " + sub.id)
                     if (sub.id == props.id) {
-                        console.log("FOUND SUB")
+                        
+                        console.log("FOUND SUBELEMENT OLD" + sub.name)
+                        console.log("FOUND SUBELEMENT" + e.target.value)
+
                         return { id: props.id, name: e.target.value }
                     }
                     else return sub;
                 })
                 props.setSubElements(newSubs)
-            }}></input>
-        </div>
+            }} onKeyUp={(e)=>{if(e.key === "Enter")(e.target as HTMLElement).blur()}}></input>
+        </li>
     )
 }
 export default SubElement

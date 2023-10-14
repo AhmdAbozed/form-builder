@@ -9,11 +9,16 @@
 }
 
 .formWrapper{
-  background-color: var(--main-background);
+  background-color: white;
   grid-area: l;
   min-height: 30rem;
   display: flex;
   flex-direction: column;
+  
+  border: 0.15rem rgb(225, 225, 225);
+  padding: 0 0.2rem;
+  border-style:dashed;
+  border-radius: 1rem;
 }
 
 .sidebarWrapper{

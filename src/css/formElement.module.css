@@ -11,10 +11,11 @@
 }
 
 @keyframes opacity {
-    from{
+    from {
         opacity: 0;
     }
-    to{
+
+    to {
         opacity: 50%;
     }
 }
@@ -23,20 +24,24 @@
 .formElement {
     padding: var(--boundmargin) 0;
     position: relative;
-   border: none;
+    border: none;
 }
 
 .formElementBody {
+    border-radius: 1rem;
+    padding: 0 0.5rem;
     min-height: 8rem;
     border: 0.1rem solid rgb(202, 202, 202);
-    position: relative;
     animation-name: grow;
     animation-duration: 0.3s;
     z-index: 1;
     position: relative;
+    background-color: var(--main-background);
+    padding-bottom: 1rem;
 }
 
-.lowerHighlight::after, .upperHighlight::before{
+.lowerHighlight::after,
+.upperHighlight::before {
     content: "";
     z-index: 3;
     display: block;
@@ -49,10 +54,11 @@
     animation-duration: 0.7s;
     animation-fill-mode: forwards;
 }
+
 .formElement.lowerHighlight::after {
     bottom: 0;
     transform: translateY(calc(var(--boundmargin) / 2)) translateX(0.5rem);
-    
+
 }
 
 .formElement.upperHighlight::before {
@@ -65,14 +71,50 @@
     flex-direction: column;
 }
 
-.subElementsBody{
+.subElementsForm {
     display: flex;
     flex-direction: column;
     align-items: baseline;
 }
+.subElement{
+    list-style-position: inside;
+    margin-bottom: 0.2rem;
+}
+.subElementInput{
+    border: none;
+    padding-left: 0.2rem;
+    border-bottom: solid #d7d7d7 0.15rem;
+    border-top-right-radius: 0.5rem;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 0.5px 1px;
+}
 
-.dragDiv{
+.dragDiv {
     text-align: center;
-    cursor:grab;
+    cursor: grab;
     user-select: none;
+}
+
+.formElementTitle {
+    width: 100%;
+    border: none;
+    border-bottom-width: medium;
+    border-bottom-style: none;
+    border-bottom-color: currentcolor;
+    border-bottom: 0.1rem solid #d7d7d7;
+    height: 1.5rem;
+    font-size: 1rem;
+    background-color: rgb(249, 249, 249);
+    padding: 0.2rem;
+    margin-bottom: 0.5rem;
+}
+
+.formElementTitle:focus {
+    border-color: gray;
+    outline-width: 1px;
+    outline-style: solid;
+    outline-color: gray;
+}
+
+.answerInput{
+    height: 2rem;
 }
