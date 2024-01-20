@@ -1,0 +1,133 @@
+.main {
+    display: flex;
+    flex-direction: column;
+}
+
+.formWrapper {
+    align-self: center;
+    width: 100%;
+    max-width: 50rem;
+    min-height: 30rem;
+    
+}
+.inputsWrapper{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    border: 0.15rem rgb(225, 225, 225);
+    padding: 0 0.2rem 0 0;
+    border-style: dashed;
+    border-radius: 1rem;
+    background-color: white;
+   
+}
+.inputElement {
+    margin: var(--boundmargin) 0 0 0;
+    position: relative;
+    border-radius: 1rem;
+    overflow: hidden;
+    min-height: 8rem;
+    border: 0.1rem solid rgb(202, 202, 202);
+    background-color: var(--main-background);
+    max-width: 50rem;
+}
+
+.inputTitle {
+    width: 100%;
+    border: none;
+    border-bottom-width: medium;
+    border-bottom-style: none;
+    border-bottom-color: currentcolor;
+    border-bottom: 0.1rem solid #d7d7d7;
+    min-height: 1.5rem;
+    height: auto;
+
+    font-size: 1rem;
+    background-color: rgb(249, 249, 249);
+    padding: 0.2rem 0.2rem 0.2rem 0.6rem;
+    margin-bottom: 0.5rem;
+}
+
+.inputText {
+
+    font-family: inherit;
+    width: calc(100% - 1rem);
+    border: 0;
+    border-bottom: 2px solid gray;
+    padding-left: 0.3rem;
+    font-size: 1rem;
+    height: 1.8rem;
+    margin: 2rem 0.5rem 0 0.5rem;
+    transition: border-color 0.2s;
+    border-radius: 0 1rem 0 0;
+
+}
+
+.inputText:focus {
+    outline-width: 1px;
+    outline-style: solid;
+    outline-color: gray;
+}
+
+.inputRadio {
+    margin: 0 0.3rem 0.5rem 0.5rem;
+}
+
+.inputSelect {
+    height: 2.5rem;
+    margin-left: 0.5rem;
+    background: white;
+    border: none;
+    border: 2px solid #c4c4c4;
+    padding-left: 0.5rem;
+    font-size: 1rem;
+    margin-top: 1rem;
+    width: 100%;
+    max-width: 15rem;
+}
+.submitWrapper{
+    display: flex;
+    margin-top: 1rem;
+}
+.formBtn{
+    width: 6.5rem;
+    height: 2rem;
+    background-color: white;
+    border-radius: 0.5rem;
+    
+    border: 0.12rem solid #d7d7d7;
+}
+#submitBtn{
+    margin-left: auto;
+    margin-right: 1.5rem;
+}
+
+.detailsWrapper{
+    align-self: center;
+    width: 100%;
+    max-width: 50rem;
+    margin-top: 4rem;
+    margin-bottom: 1rem;
+    
+}
+
+.detailsWrapper .inputsWrapper{
+    border-style: solid;
+    display: flex;
+    flex-direction: row;
+    border-radius: 0.2rem;
+    height: 4rem;
+    align-items: center;
+}
+
+.headSelect {
+    height: 2.5rem;
+    margin: auto 0 auto 0.5rem;
+    background: white;
+    border: 2px solid #c4c4c4;
+    padding-left: 0.5rem;
+    font-size: 1rem;
+    margin-right: auto;
+    width: 100%;
+    max-width: 15rem;
+}

@@ -1,16 +1,33 @@
 "use client"
 import styles from '../css/sidebar.module.css'
+import '../css/util/customCheckbox.css'
+import { useEffect, useState } from 'react'
+const Sidebar = (props: { saveForm: any, clearForm: any }) => {
+  const [isClient, setIsClient] = useState(false)
+ 
+  useEffect(() => {
+    setIsClient(true)
+  }, [])
 
-const Sidebar = (props: {saveForm: any}) => {
-  function dragFunc(e: any, type: 'checkbox' | 'select' | 'text') {
+  const dragFunc = (e: any, type: 'checkbox' | 'select' | 'text') => {
+    console.log(e)
+    //On android a polyfill catches the ontouch and binds drag api to it but throws dataTransfer is undefined anyway on client-side
     e.dataTransfer.setData("text/plain", JSON.stringify([]));
     e.dataTransfer.setData("type", type);
     e.dataTransfer.dropEffect = "copy";
   }
+
+  const renderSaveBtn = () => {
+    if (isClient) {
+      return <input type="submit" value="Save & Replace" className={styles.sidebarButton} id={styles.saveBtn} />
+    }
+    else return <input type="submit" value="Save Form" className={styles.sidebarButton} id={styles.saveBtn} />
+  }
+  
   return (
     <section id={styles.wrapper}>
       <div id={styles.sidebarBody}>
-        <div id={styles.draggablesBody}>
+        <section id={styles.draggablesBody}>
           <div id={styles.sidebarHead}>Drag From Here</div>
           <div id={styles.sidebarContent}>
             <div className={styles.sidebar_element} draggable="true" onDragStart={(e) => dragFunc(e, 'text')} onTouchStart={(e) => dragFunc(e, 'text')}>Text Question</div>
@@ -18,12 +35,15 @@ const Sidebar = (props: {saveForm: any}) => {
             <div className={styles.sidebar_element} draggable="true" onDragStart={(e) => dragFunc(e, 'select')} onTouchStart={(e) => dragFunc(e, 'select')}>Dropdown</div>
           </div>
 
-        </div>
-        <div id={styles.saveContainer}>
-          <input type="button" value="Save Form" className={styles.sidebarButton} id={styles.saveBtn} onClick={props.saveForm} />
-          <input type="button" value="Delete Form" className={styles.sidebarButton} id={styles.deleteBtn} />
-
-        </div>
+        </section>
+        <section id={styles.saveWrapper}>
+          {isClient ? renderSaveBtn() : null}
+          <button type="button" className={styles.sidebarButton} id={styles.deleteBtn} onClick={(e: any) => { props.clearForm(); e.target.blur() }}>Clear Form</button>
+        </section>
+        <section className={styles.liveCheckWrapper}>
+          <input type="checkbox" id='liveCheckbox' className="sc-gJwTLC ikxBAC" />
+          <label htmlFor="liveCheckbox" className={styles.checkboxLabel}>Form Live</label>
+        </section>
 
       </div>
 

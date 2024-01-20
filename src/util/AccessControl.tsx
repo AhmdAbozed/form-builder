@@ -12,7 +12,6 @@ class cookieUtils {
 
     hasRefreshToken() {
         if (typeof document !== 'undefined') {
-            console.log(document)
             if (document.cookie.includes("refreshTokenExists")) {
                 return true;
             }
@@ -25,7 +24,7 @@ class cookieUtils {
     }
 }
 
-export const AccessControl = ({ child }: { child: React.ReactElement }) => {
+/*export const AccessControl = ({ child }: { child: React.ReactElement }) => {
     const cookieFuncs = new cookieUtils()
     if (cookieFuncs.hasRefreshToken()) {
 
@@ -35,6 +34,6 @@ export const AccessControl = ({ child }: { child: React.ReactElement }) => {
         //return <Navigate replace to="/login" />
         console.log("nextjs's equivalent of navigate to login")
     }
-}
+}*/
 
 export default cookieUtils

@@ -88,10 +88,14 @@
     box-shadow: rgba(0, 0, 0, 0.24) 0px 0.5px 1px;
 }
 
+/*will replace drag text with svg later*/
 .dragDiv {
+    touch-action: none;
     text-align: center;
     cursor: grab;
     user-select: none;
+    height: 2rem;
+    line-height: 1.5rem;
 }
 
 .formElementTitle {

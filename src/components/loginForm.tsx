@@ -54,7 +54,6 @@ const LoginForm = (props: {
             }
             else {
                 console.log("invalid credentials")
-
                 document.getElementById("invalid-username-prompt")!.hidden = false;
                 document.getElementById("invalid-username-prompt")!.innerHTML = resJSON;
             }

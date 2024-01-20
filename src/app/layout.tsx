@@ -18,8 +18,7 @@ export default function RootLayout({
 
   const renderLoginForm = () => {
     if (loginFormState) {
-      if (document.cookie.includes("refreshTokenExists")) return
-      return <LoginForm toggleLoginForm={toggleLoginForm} loginFormState={loginFormState} />;
+      if (!document.cookie.includes("refreshTokenExists")) return <LoginForm toggleLoginForm={toggleLoginForm} loginFormState={loginFormState} />;
     }
     else return;
   }
@@ -29,12 +28,12 @@ export default function RootLayout({
       <body>
         <loginContext.Provider value={{ loginFormState, toggleLoginForm }}>
 
-          <HeadElement toggleLoginForm={toggleLoginForm}  />
+          <HeadElement toggleLoginForm={toggleLoginForm} />
           {renderLoginForm()}
-          <div>
-            {children}
-          </div>
-          </loginContext.Provider>
+
+          {children}
+
+        </loginContext.Provider>
 
       </body>
     </html>

@@ -4,6 +4,16 @@
   position: relative;
 }
 
+@media (max-width: 550px) {
+  #wrapper {
+    grid-area: f;
+    height: 100%;
+    position: relative;
+    display: none;
+  }
+
+}
+
 #sidebarHead {
   background-color: var(--main-background);
   text-align: center;
@@ -18,7 +28,7 @@
   top: 2rem;
 }
 
-#draggablesBody{
+#draggablesBody {
   overflow: hidden;
   top: 2rem;
   background-color: white;
@@ -27,6 +37,7 @@
   margin-left: 1rem;
   border: solid 0.1rem rgb(197, 197, 197);
 }
+
 .sidebar_element {
   height: 2rem;
   text-align: center;
@@ -39,7 +50,8 @@
   cursor: grab;
   padding-top: 0.4rem;
 }
-#saveContainer{
+
+#saveWrapper {
   margin-top: 0.2rem;
   background-color: white;
   border-radius: 1rem;
@@ -49,15 +61,40 @@
   height: 3rem;
   overflow: hidden;
 }
-.sidebarButton{
+
+.sidebarButton {
   flex: 1;
   border: none;
 }
+
 #saveBtn {
   border-right: solid 0.1rem rgb(197, 197, 197);
- }
+}
 
-#deleteBtn:hover{
+#saveBtn:hover,
+#saveBtn:focus {
+  background-color: rgb(202, 202, 202);
+}
+
+
+#deleteBtn:hover,
+#deleteBtn:focus {
   background-color: rgb(255, 78, 78);
   color: white;
+}
+
+.liveCheckWrapper {
+  display: flex;
+  flex-direction: row;
+  background-color: white;
+  border-radius: 1rem;
+  border: solid 0.1rem rgb(197, 197, 197);
+  padding: 0.5rem;
+  margin-left: 1rem;
+  align-content: center;
+}
+
+.checkboxLabel {
+  margin-left: 0.3rem;
+  font-size: large;
 }

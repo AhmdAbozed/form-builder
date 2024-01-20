@@ -1,0 +1,46 @@
+.formHeadWrapper{
+    display: flex;
+    flex-direction: row;
+    align-content: space-between;
+    height: 3rem;
+    box-shadow: 0 0.1rem 0.2rem rgb(176, 176, 176);
+    width: 100%;
+    padding-right: 1rem;
+}
+
+.headSelect {
+    height: 2.5rem;
+    margin: auto 0 auto 0.5rem;
+    background: white;
+    border: 2px solid #c4c4c4;
+    padding-left: 0.5rem;
+    font-size: 1rem;
+    margin-right: auto;
+    width: 100%;
+    max-width: 15rem;
+}
+.headBtnsWrapper{
+    display: flex;
+    width: 100%;
+    max-width: 20rem;
+}
+.headButton{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    font-size:medium;
+    border:none;  
+    height: 100%;
+    flex: 1;
+}
+
+@media (max-width: 550px) {
+    .headSelect{
+        width: 50%;
+        font-size: small;
+    }
+    .headButton{
+        font-size:small;
+    }
+}

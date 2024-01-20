@@ -1,0 +1,19 @@
+
+.responseWrapper {
+    padding: var(--boundmargin) 0;
+    position: relative;
+    border: none;
+}
+
+.resElementBody {
+    border-radius: 1rem;
+    padding: 0 0.5rem;
+    min-height: 8rem;
+    border: 0.1rem solid rgb(202, 202, 202);
+    animation-name: grow;
+    animation-duration: 0.3s;
+    z-index: 1;
+    position: relative;
+    background-color: var(--main-background);
+    padding-bottom: 1rem;
+}

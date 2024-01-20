@@ -1,3 +1,4 @@
+console.log("inside dragdroptouch")
 var DragDropTouch;
 (function (DragDropTouch_1) {
     'use strict';

@@ -1,22 +1,18 @@
 "use client"
+import { subElementObj } from '@/app/page';
 import styles from '../css/formPage.module.css'
-import React, { SetStateAction, useState, Dispatch, useEffect } from 'react';
-import SubElement from './subElement'
-import { formElementObj, subElementObj } from '@/app/page';
-const InputFormElement = (props: { id: string; title: string; subElements: Array<any>; type: 'checkbox' | 'text' | 'select' }) => {
+import React from 'react';
+const InputFormElement = (props: { id: string; question: string; subElements: Array<subElementObj>; type: 'checkbox' | 'text' | 'select' }) => {
 
-
-    const [subElements, setSubElements] = useState<Array<any>>(props.subElements);
-    const [titleState, setTitleState] = useState<string>(props.title);
     const renderInputs = () => {
         if (props.type === "text") {
-            return <input type="text" className={styles.inputText} />
+            return <input type="text" className={styles.inputText} name={props.question}/>
         }
         else if (props.type === "checkbox") {
             const renderedSubElements = props.subElements.map((element) => {
                 return (
                     <div className={styles.inputRadioWrapper} key={element.id}>
-                        <input type="radio" name={props.id} className={styles.inputRadio} value={element.name}></input>
+                        <input type="radio" name={props.question} className={styles.inputRadio} value={element.name}></input>
                         <label htmlFor={props.id} className={styles.inputLabel}>{element.name}</label>
                     </div>
                 )
@@ -30,7 +26,7 @@ const InputFormElement = (props: { id: string; title: string; subElements: Array
                 )
             })
             return (
-                <select name={props.id} className={styles.inputSelect}>
+                <select name={props.question} className={styles.inputSelect}>
                     {renderedSubElements}
                 </select>
             )
@@ -38,7 +34,7 @@ const InputFormElement = (props: { id: string; title: string; subElements: Array
     }
     return (
         <article className={styles.inputElement} key={props.id}>
-            <p className={styles.inputTitle}>{props.title}</p>
+            <p className={styles.inputTitle}>{props.question}</p>
             {renderInputs()}
         </article>
     )
