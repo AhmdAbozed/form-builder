@@ -1,0 +1,36 @@
+{
+    "defaultEnv": {"ENV": "ENV"},
+    "placeholder":{
+      "driver": "pg",
+      "host": "localhost",
+      "user": "postgres",
+      "password": "passageword",
+      "port":"5432"
+    },
+    "dev": {
+      "driver": "pg",
+      "host": "localhost",
+      "database": "form_builder",
+      "user": "postgres",
+      "password": "passageword",
+      "port":"5432"
+    },
+    "production": {
+      "driver": "pg",
+      "host": "/cloudsql/annular-accord-394214:europe-west8:formbuilder",
+      "database": "form_builder",
+      "user": "postgres",
+      "password": "passageword",
+      "port":"5432"
+    },
+
+
+    "test": {
+      "driver": "pg",
+      "host": "/cloudsql/annular-accord-394214:europe-west8:formbuilder",
+      "database": "form_builder_test",
+      "user": "postgres",
+      "password": "passageword",
+      "port":"5432"
+    }
+  }

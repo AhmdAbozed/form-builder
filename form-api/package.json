@@ -1,0 +1,50 @@
+{
+  "type": "module",
+  "scripts": {
+    "prepare": "npm run gcp-build",
+    "pretest": "npm run gcp-build",
+    "build": "tsc",
+    "gcp-build": "tsc",
+    "ts-node": " npx ts-node src/server.ts",
+    "start": "node dist/server.js",
+    "buildStart": "tsc && node dist/server.js",
+    "startTestEnv": "cross-env ENV=test npm run start",
+    "DB": "db-migrate --env placeholder db:create form_builder",
+    "testDB": "db-migrate --env placeholder db:create reddit_db",
+    "dropTestDB": "db-migrate db:drop reddit_db",
+    "migrateUp": "db-migrate --env dev up",
+    "migrateDown": "db-migrate --env dev down",
+    "migrateReset": "npm run migrateDown && npm run migrateUp",
+    "migrateUpTest": "cross-env ENV=test db-migrate up",
+    "migrateDownTest": "cross-env ENV=test db-migrate down",
+    "test": "tsc && jasmine",
+    "migrateTest": "npm run build && npm run migrateUpTest && (npm run test || npm run migrateDownTest) && npm run migrateDownTest"
+  },
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "body-parser": "^1.20.0",
+    "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5",
+    "db-migrate": "^0.11.13",
+    "db-migrate-pg": "^1.2.2",
+    "dotenv": "^16.0.1",
+    "esm": "^3.2.25",
+    "express": "^4.18.1",
+    "express-validator": "^6.14.2",
+    "jsonwebtoken": "^9.0.0",
+    "multer": "^1.4.5-lts.1",
+    "npm-check-updates": "^16.0.1",
+    "pg": "^8.7.3",
+    "typescript": "^4.7.4"
+  },
+  "devDependencies": {
+    "@types/bcrypt": "^5.0.0",
+    "@types/cookie-parser": "^1.4.3",
+    "@types/cors": "^2.8.12",
+    "@types/express": "^4.17.13",
+    "@types/jsonwebtoken": "^9.0.2",
+    "@types/multer": "^1.4.7",
+    "@types/pg": "^8.6.5",
+    "ts-node": "^10.9.1"
+  }
+}
