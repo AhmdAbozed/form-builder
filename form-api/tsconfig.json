@@ -66,7 +66,7 @@
     "skipLibCheck": true,                     /* Skip type checking of declaration files. */
     "forceConsistentCasingInFileNames": true  /* ,allow inconsistently-cased references to the same file. */
   },
-  "include": ["./src/**/*", "src/tests/*","src/tests/*","./src/**/**/*.ts","src/**/**/*.ts"],
+  "include": ["./src/**/*.ts", "src/tests/*","src/tests/*","./src/**/**/*.ts","src/**/**/*.ts"],
   "ts-node": {
     "esm": true
     }

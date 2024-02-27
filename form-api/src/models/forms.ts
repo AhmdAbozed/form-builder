@@ -16,7 +16,7 @@ export class formsStore {
             const conn = await client.connect();
             
       //      const sql = 'INSERT INTO comment_upvotes (comment_id, user_id, post_id, vote) VALUES ($1, $2, $3, $4) ON CONFLICT (comment_id, user_id) DO UPDATE SET vote=($4) RETURNING (SELECT vote FROM comment_upvotes WHERE comment_id=($1) AND user_id=($2)) ';
-            const sql = 'INSERT INTO forms (user_id, title, form) VALUES ($1, $2, $3) ON CONFLICT (title) DO UPDATE SET form=($3) RETURNING *';
+            const sql = 'INSERT INTO forms (user_id, title, form) VALUES ($1, $2, $3) ON CONFLICT (title, user_id) DO UPDATE SET form=($3) RETURNING *';
             //without json.stringify, JSON is stored with \" instead of "
             const results = await conn.query(sql, [form.user_id, form.title,JSON.stringify(form.form)]);
             conn.release();

@@ -174,6 +174,7 @@ class tokenClass {
         }
         else {//refreshtoken doesnt exist in db
           //according to express docs, the cookie's options excluding expiration must be included to clear it
+          console.log("refresh token not in DB")
           res.clearCookie("refreshToken", { secure: false, httpOnly: true })
           res.clearCookie("refreshTokenExists", { secure: false, httpOnly: false })
           throw new BaseError(401, "refresh token not found in DB, redirect to login")
@@ -181,6 +182,7 @@ class tokenClass {
 
       }
       else {//no token in cookie
+        console.log("refresh token missing/expired")
         throw new BaseError(401, "refresh token missing/expired.")
       }
     }

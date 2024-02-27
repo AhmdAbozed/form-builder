@@ -5,13 +5,27 @@ import { usersStore, user } from '../models/users.js';
 import dotenv from 'dotenv'
 import { tokenClass } from '../util/tokenauth.js';
 import { BaseError } from '../util/errorHandler.js';
-
+import { mailCode, mailCodeStore } from '../models/mailCode.js';
+import { getIdFromToken, getRandomInt } from '../util/util.js';
+import sendMailCode from '../util/nodemailer.js';
+import { TokenClass } from 'typescript';
 dotenv.config()
 
 
+const tokenFuncs = new tokenClass()
 const store = new usersStore();
+const mailStore = new mailCodeStore()
 const token = new tokenClass();
 //See express-validator docs for, docs.
+
+//No error handling for mailcode yet, assumes all nodemailer requests succeed
+const createMailCode = async (user_id: number): Promise<any> => {
+    const mailVerifyCode = getRandomInt(1000, 9999)
+    const mailCodeResult = await mailStore.createMailCode({ user_id: user_id, code: mailVerifyCode })
+    const result = await sendMailCode(mailVerifyCode)
+    console.log("mail Sent")
+    return result
+}
 const signUpPost = [
 
     body('Username')
@@ -29,7 +43,7 @@ const signUpPost = [
                 //An error is found
                 let errorPrompt = "";
                 for (const error of errorArr) {
-                    errorPrompt += error.msg + "\n";
+                    errorPrompt += error.msg;
                 }
                 console.log("ErrorArr: " + JSON.stringify(errorArr))
                 console.log("express-vali validationResult(req) " + validationResult(req))
@@ -46,18 +60,22 @@ const signUpPost = [
                 console.log("recieved validation: " + JSON.stringify(validation[0]))
                 let errorPrompt = "";
                 for (const error of validation) {
-                    errorPrompt += error.msg + "\n";
+                    errorPrompt += error.msg;
                 }
 
                 console.log("ErrorPrompt signup: " + JSON.stringify(errorPrompt))
                 throw new BaseError(403, JSON.stringify(errorPrompt));
+            } else {
+                const result = await store.signup(submission)
+                //No error handling here for code creation as account is created anyway, client-side can resend code request 
+                const verifyCode = await createMailCode(result.id!)
+
+                await token.createRefreshToken(req, res, result)
+
+                console.log("result/End Of Sign Up Function: " + result)
             }
 
-            const result = await store.signup(submission)
 
-            await token.createRefreshToken(req, res, result)
-
-            console.log("result/End Of Sign Up Function: " + result)
         }
         catch (err) {
             next(err)
@@ -80,7 +98,7 @@ const signInPost = [
                 //An error is found
                 let errorPrompt = "";
                 for (const error of errorArr) {
-                    errorPrompt += error.msg + "\n";
+                    errorPrompt += error.msg;
                 }
 
                 console.log("ErrorArr: " + JSON.stringify(errorArr))
@@ -117,13 +135,45 @@ const signOut = async function (req: Request, res: Response, next: any) {
     res.clearCookie("refreshTokenExists", { secure: false, httpOnly: false })
     res.clearCookie("accessToken", { secure: false, httpOnly: true })
     res.clearCookie("accessTokenExists", { secure: false, httpOnly: false })
-    
+
     res.sendStatus(200);
+}
+
+const verifyEmail = async function (req: Request, res: Response, next: any) {
+    const user_id = Number(getIdFromToken(req))
+    const result = await mailStore.getMailCode(user_id)
+    console.log("entered code: " + req.body.mailCode + ", db code: " + result)
+    if (req.body.mailCode == result) {
+        res.sendStatus(200);
+
+    } else {
+        throw new BaseError(403, "Incorrect Verification Code");
+    }
+}
+const resendEmailCode = async (req: Request, res: Response, next: any) => {
+    try {
+        const user_id = Number(getIdFromToken(req))
+        const result = await createMailCode(user_id)
+        if (result) {
+            console.log("mail resolved")
+            res.sendStatus(200)
+        }
+        else {
+            throw new BaseError(400, "Failed to create code");
+        }
+
+    } catch (err) {
+        next(err)
+    }
+
+
 }
 const UsersRouter = Router()
 
 UsersRouter.post("/users/signup", signUpPost);
 UsersRouter.get("/users/signout", signOut);
 UsersRouter.post("/users/signin", signInPost);
+UsersRouter.post("/users/verifyemail", tokenFuncs.verifyTokensJWT.bind(tokenFuncs), verifyEmail);
+UsersRouter.post("/users/sendemailcode", tokenFuncs.verifyTokensJWT.bind(tokenFuncs), resendEmailCode);
 
 export default UsersRouter;

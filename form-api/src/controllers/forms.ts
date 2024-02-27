@@ -19,22 +19,12 @@ const postForm = async (req: Request, res: Response, next: any) => {
         console.log("form req body: ")
         console.log(req.body)
         if (user_id) {
-
             const form: form = { id: Number(req.params.form_id), user_id: user_id, title: req.body.title, form: req.body.formElements }
-            if (Number(req.params.form_id)) {
-                const result = await store.updateForm(form)
-                if (result) {
-                    res.sendStatus(200)
-                    return;
-                }
-            } else {
-                const result = await store.create(form)
-                if (result) {
-                    res.sendStatus(200)
-                    return;
-                }
+            const result = await store.create(form)
+            if (result) {
+                res.sendStatus(200)
+                return;
             }
-
         }
         else {
             throw new BaseError(400, "Failed to post form, invalid user id")
@@ -46,11 +36,9 @@ const postForm = async (req: Request, res: Response, next: any) => {
 }
 const updateForm = async (req: Request, res: Response, next: any) => {
     try {
-        console.log("updateform req.body: " + req.body)
-
         const user_id = getIdFromToken(req)
         if (user_id && Number(req.params.id)) {
-            const form: form = { id: Number(req.params.id), user_id: user_id, title: req.body.title, form: req.body.form }
+            const form: form = { id: Number(req.params.id), user_id: user_id, title: req.body.title, form: req.body.formElements }
             const result = await store.updateForm(form)
             if (result) {
                 res.sendStatus(200)
@@ -124,6 +112,7 @@ FormsRouter.get("/forms/:id", getForm)
 
 FormsRouter.get("/forms/", tokenFuncs.verifyTokensJWT.bind(tokenFuncs), getUserForms)
 FormsRouter.post("/forms/:form_id", tokenFuncs.verifyTokensJWT.bind(tokenFuncs), postForm)
+FormsRouter.post("/forms/:form_id/update", tokenFuncs.verifyTokensJWT.bind(tokenFuncs), updateForm)
 //FormsRouter.post("/forms/:form_id", tokenFuncs.verifyTokensJWT.bind(tokenFuncs), updateForm)
 export default FormsRouter;
 

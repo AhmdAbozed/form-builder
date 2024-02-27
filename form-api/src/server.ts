@@ -6,7 +6,8 @@ import usersRouter from './controllers/users.js'
 import cookieParser from 'cookie-parser'
 import { sendError } from './util/errorHandler.js'
 import SubmissionsRouter from './controllers/submissions.js'
-
+import main from './util/nodemailer.js'
+//main().catch(console.error);
 
 //GC App Engine env variable
 const port = parseInt(process.env.backendPort!);
