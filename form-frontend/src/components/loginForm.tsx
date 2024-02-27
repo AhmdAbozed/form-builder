@@ -1,14 +1,13 @@
-//import { useParams } from "react-router-dom"
+//Component from old reddit project, needs refactoring as it manipulates DOM directly
 import React, { useState, useEffect } from "react";
 import "./../css/LoginForm.css"
-//import { protocol } from "../util/utilFuncs";
 const protocol = "http";
+
 const LoginForm = (props: {
     toggleLoginForm: React.Dispatch<React.SetStateAction<boolean>>;
     loginFormState: boolean;
 }) => {
-
-    const [formState, setForm] = useState("login");
+    const [formState, setForm] = useState<"" | "login" | "emailSignup" | "signup" | "emailVerification">("login");
     const [emailState, setEmail] = useState("");
     const resetErrors = () => {
         document.getElementById("invalid-username-prompt")!.hidden = true;
@@ -31,7 +30,7 @@ const LoginForm = (props: {
         else { endpoint = "users/signup" }
 
         if (userValidation && passValidation) {
-            const options = {
+            const options: RequestInit = {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json',
@@ -41,7 +40,6 @@ const LoginForm = (props: {
 
                 body: JSON.stringify(submission)
             }
-            //@ts-ignore
             const res = await fetch(protocol + "://" + window.location.hostname + ":3003/" + endpoint, options);
             console.log(res.status)
 
@@ -50,7 +48,12 @@ const LoginForm = (props: {
 
             if (res.status == 200) {
                 document.getElementById("result")!.innerHTML = "200. Response recieved"
-                window.location.reload()
+                if (formState == "signup") {
+                    setForm("emailVerification")
+                } else {
+                    window.location.reload()
+                }
+
             }
             else {
                 console.log("invalid credentials")
@@ -79,6 +82,58 @@ const LoginForm = (props: {
             }
         }
 
+    }
+
+    const submitEmailCode = async (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+        const target = event.target as any
+        const submission = { mailCode: target.elements.code.value }
+
+        const options: RequestInit = {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Credentials': 'true'
+            },
+            credentials: "include",
+            body: JSON.stringify(submission)
+        }
+        const res = await fetch(protocol + "://" + window.location.hostname + ":3003/users/verifyemail", options);
+        console.log(res.status)
+
+        console.log("res" + res)
+
+        if (res.status == 200) {
+            document.getElementById("result")!.innerHTML = "200. Response recieved"
+        }
+        else {
+            console.log("invalid code: " + res.status)
+
+        }
+        return res;
+    }
+
+    const resendEmailCode = async () => {
+        const options: RequestInit = {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Credentials': 'true'
+            },
+            credentials: "include"
+        }
+        const res = await fetch(protocol + "://" + window.location.hostname + ":3003/users/sendemailcode", options);
+        console.log(res.status)
+
+        console.log("res" + res)
+
+        if (res.status == 200) {
+            document.getElementById("result")!.innerHTML = "200. Response recieved"
+        }
+        else {
+            console.log("invalid code: " + res.status)
+
+        }
     }
 
     const formHandler = () => {
@@ -119,9 +174,9 @@ const LoginForm = (props: {
                     </div>
 
                     <input type="submit" value="Log In" id="signin-submit" aria-label="signin submit" />
-                    <div id="signup-prompt" >New to Reddit? <a href="" aria-label="sign up" onClick={(e) => { e.preventDefault(); resetErrors(); setForm("emailsignup") }}>Sign up</a></div>
+                    <div id="signup-prompt" >New to Form-Builder? <a href="" aria-label="sign up" onClick={(e) => { e.preventDefault(); resetErrors(); setForm("emailSignup") }}>Sign up</a></div>
                     <div data-testid="result" id="result">
-                        placeholder for testing
+                       
                     </div>
                 </section>
             </form>
@@ -156,7 +211,7 @@ const LoginForm = (props: {
                         }
                     }
                     } />
-                    <div id="signup-prompt">Already a Redditor? <a href="" onClick={(e) => { e.preventDefault(); setForm("login") }}>Log In</a></div>
+                    <div id="signup-prompt">Already a User? <a href="" onClick={(e) => { e.preventDefault(); setForm("login") }}>Log In</a></div>
                 </div>
             </form>
         }
@@ -187,17 +242,39 @@ const LoginForm = (props: {
                     <input type="submit" value="Sign Up" id="signin-submit" aria-label="signup submit" />
                     <div id="signup-prompt">Already a Redditor? <a href="" onClick={(e) => { e.preventDefault(); resetErrors(); setForm("login") }}>Log In</a></div>
                     <div data-testid="result" id="result">
-                        placeholder for testing
+                        
                     </div>
                 </div>
             </form>
 
         }
+        const renderEmailVerification = () => {
+            return <form className="user-form" id="signup-form" onSubmit={submitEmailCode}>
+                <div id="login-body">
+                    <input type="button" id="signin-cancel" onClick={() => { props.toggleLoginForm(false) }} />
 
+                    <div id="signin-info">
+                        <h2>Verify Email</h2>
+                        <p>A 4-digits code has been sent to your Email. Enter the code to verify it</p>
+                    </div>
+
+                    <div className="container-input">
+                        <input key="3" type="text" className="signin-inputs" id="input-code" name="code" required />
+                        <label htmlFor="input-code" className="custom-placeholder" id="custom-placeholder-username" onClick={() => { console.log("clicked"); document.getElementById("input-username")?.focus() }}>4-digits Code</label>
+                    </div>
+                    <input type="submit" value="Verify" id="signin-submit" aria-label="signup submit" />
+                    <div id="signup-prompt"><a href="" onClick={async(e)=>{e.preventDefault();await resendEmailCode()}}>Resend Code?</a></div>
+                    <div data-testid="result" id="result">
+    
+                    </div>
+                </div>
+            </form>
+        }
         switch (formState) {
             case "login": ; return renderLogIn(); break;
-            case "emailsignup": return renderEmailSignUp(); break;
-            case "signup": return renderSignUp();
+            case "emailSignup": return renderEmailSignUp(); break;
+            case "signup": return renderSignUp(); break;
+            case "emailVerification": return renderEmailVerification()
         }
 
     }

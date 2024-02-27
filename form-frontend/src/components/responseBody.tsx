@@ -133,9 +133,12 @@ const Responses = (props: { formState: formObj }) => {
     <main className={styles.main}>
       <section className={styles.detailsWrapper}>
         <div className={styles.inputsWrapper}>
+          <div>
+            
+          </div>
           {renderSelect()}
 
-          <div>Responses Count: {responsesState.length}</div>
+          <div className={styles.responseCount}>Responses Count: {responsesState.length}</div>
           {renderPrevBtn()}
           {renderNextBtn()}
         </div>

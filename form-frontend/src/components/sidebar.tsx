@@ -19,16 +19,16 @@ const Sidebar = (props: { saveForm: any, clearForm: any }) => {
 
   const renderSaveBtn = () => {
     if (isClient) {
-      return <input type="submit" value="Save & Replace" className={styles.sidebarButton} id={styles.saveBtn} />
+      return <input type="submit" value="SAVE & REPLACE" className={styles.sidebarButton} id={styles.saveBtn} />
     }
-    else return <input type="submit" value="Save Form" className={styles.sidebarButton} id={styles.saveBtn} />
+    else return <input type="submit" value="SAVE FORM" className={styles.sidebarButton} id={styles.saveBtn} />
   }
   
   return (
     <section id={styles.wrapper}>
       <div id={styles.sidebarBody}>
         <section id={styles.draggablesBody}>
-          <div id={styles.sidebarHead}>Drag From Here</div>
+          <div id={styles.sidebarHead}>DRAG FROM HERE</div>
           <div id={styles.sidebarContent}>
             <div className={styles.sidebar_element} draggable="true" onDragStart={(e) => dragFunc(e, 'text')} onTouchStart={(e) => dragFunc(e, 'text')}>Text Question</div>
             <div className={styles.sidebar_element} draggable="true" onDragStart={(e) => dragFunc(e, 'checkbox')} onTouchStart={(e) => dragFunc(e, 'checkbox')}>Multiple Choices</div>
@@ -38,7 +38,7 @@ const Sidebar = (props: { saveForm: any, clearForm: any }) => {
         </section>
         <section id={styles.saveWrapper}>
           {isClient ? renderSaveBtn() : null}
-          <button type="button" className={styles.sidebarButton} id={styles.deleteBtn} onClick={(e: any) => { props.clearForm(); e.target.blur() }}>Clear Form</button>
+          <button type="button" className={styles.sidebarButton} id={styles.deleteBtn} onClick={(e: any) => { props.clearForm(); e.target.blur() }}>CLEAR FORM</button>
         </section>
         <section className={styles.liveCheckWrapper}>
           <input type="checkbox" id='liveCheckbox' className="sc-gJwTLC ikxBAC" />

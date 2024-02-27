@@ -43,7 +43,7 @@
 #use-app-button {
 
     margin-left: auto;
-    background-color: rgb(255, 81, 0);
+    background-color: var(--highlight-background);
     padding: 0 0.6rem 0 0.6rem;
     border-radius: 100px;
 }
@@ -58,7 +58,7 @@
 }*/
 
 #signin-button {    
-    background-color: rgb(255, 81, 0);
+    background-color: var(--highlight-background);
     padding: 0 1rem 0 1rem;
     border-radius: 100px;
 }
@@ -81,10 +81,6 @@
     margin-right: 0.25rem;
 }
 
-#head-search {
-    display: none;
-}
-
 @media (min-width: 550px) {
     #head {
         height: 2.5rem;
@@ -102,10 +98,6 @@
     }
 
     .head-item {
-        margin-left: 0.7rem;
-    }
-
-    #use-app-button {
         margin-left: 0.7rem;
     }
 

@@ -1,6 +1,6 @@
 "use client"
 import { subElementObj } from '@/app/page';
-import styles from '../css/formPage.module.css'
+import styles from '../css/fillPage.module.css'
 import React from 'react';
 const InputFormElement = (props: { id: string; question: string; subElements: Array<subElementObj>; type: 'checkbox' | 'text' | 'select' }) => {
 

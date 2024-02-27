@@ -5,19 +5,12 @@ import FormHead from '@/components/formHead';
 import { createContext, useContext, useEffect, useRef, useState } from 'react';
 import FormElement from '../components/formElement'
 import { loginContext } from "./layout";
-import { useRouter } from 'next/navigation';
 import cookieUtils from '@/util/AccessControl';
 import Responses from '@/components/responseBody';
 import { useSearchParams } from 'next/navigation';
 //import 'drag-drop-touch'
-import dynamic from 'next/dynamic'
 import BottomSidebar from '@/components/bottomSidebar';
-/*
-const DynamicComponentWithNoSSR = dynamic(
-  () => import('drag-drop-touch'),
-  { ssr: false }
-)
-*/
+
 export type subElementObj = {
   id: number;
   name: string;
@@ -90,12 +83,12 @@ export default function Home() {
     if (isClient) {
 
       e.preventDefault();
-
       const pageSearchParams = new URLSearchParams(window.location.search);
       if (!document.cookie.includes("refreshTokenExists")) {
         toggleLoginForm(true);
         return;
       }
+
       const options = {
         method: "POST",
         //credentials: "include",
@@ -172,9 +165,9 @@ export default function Home() {
 
   //Dom searchParams doesn't work as intended (params don't update), Nextjs useSearch hook works 
   const searchParams = useSearchParams()
-  
+
   const renderBody = () => {
-    if (searchParams.get('section') === "responses" && cookieFuncs.hasRefreshToken()) {
+    if (searchParams.get('section') === "responses") {
       return <Responses formState={formState} />
     }
     else {
@@ -192,8 +185,10 @@ export default function Home() {
     }
   }
 
+
+
   const renderBottomSidebar = () => {
-    if (!(searchParams.get('section') === "responses" && cookieFuncs.hasRefreshToken())) {
+    if (!(searchParams.get('section') === "responses")) {
       return <BottomSidebar saveForm={saveForm} clearForm={clearForm} />
     }
   }
@@ -201,7 +196,7 @@ export default function Home() {
 
     <div id={styles.pageWrapper}>
       <script src="DragDropTouch.js"></script>
-      
+
       {renderFormHead()}
       {renderBody()}
       {renderBottomSidebar()}

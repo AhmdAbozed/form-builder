@@ -1,6 +1,7 @@
 .main {
     display: flex;
     flex-direction: column;
+    padding: 0 0.3rem
 }
 
 .formWrapper {
@@ -8,21 +9,24 @@
     width: 100%;
     max-width: 50rem;
     min-height: 30rem;
-    
+
 }
-.inputsWrapper{
+
+.inputsWrapper {
     display: flex;
     flex-direction: column;
     width: 100%;
     border: 0.15rem rgb(225, 225, 225);
-    padding: 0 0.2rem 0 0;
+    padding: 0 0.2rem 0 0.2rem;
     border-style: dashed;
     border-radius: 1rem;
     background-color: white;
-   
+    min-height: 4rem;
+    margin-top: 1rem;
 }
+
 .inputElement {
-    margin: var(--boundmargin) 0 0 0;
+    margin: var(--boundmargin) 0 var(--boundmargin) 0;
     position: relative;
     border-radius: 1rem;
     overflow: hidden;
@@ -85,49 +89,75 @@
     width: 100%;
     max-width: 15rem;
 }
-.submitWrapper{
+
+.submitWrapper {
     display: flex;
     margin-top: 1rem;
 }
-.formBtn{
+
+.formBtn {
     width: 6.5rem;
     height: 2rem;
-    background-color: white;
+    background-color: var(--highlight-background);
+    color: white;
     border-radius: 0.5rem;
-    
-    border: 0.12rem solid #d7d7d7;
-}
-#submitBtn{
-    margin-left: auto;
-    margin-right: 1.5rem;
+    padding: 0 0.5rem;
+    border:none;
 }
 
-.detailsWrapper{
+#submitBtn {
+    margin-left: auto;
+    margin-right: 1rem;
+
+}
+
+@media (max-width: 550px) {
+    #submitBtn {
+        margin-right: 0.5rem;
+        margin-left: auto;
+    }
+
+}
+
+.detailsWrapper {
     align-self: center;
     width: 100%;
     max-width: 50rem;
     margin-top: 4rem;
     margin-bottom: 1rem;
-    
+
 }
 
-.detailsWrapper .inputsWrapper{
+.detailsWrapper .inputsWrapper {
     border-style: solid;
     display: flex;
     flex-direction: row;
     border-radius: 0.2rem;
-    height: 4rem;
+    height: 4.5rem;
     align-items: center;
 }
 
 .headSelect {
     height: 2.5rem;
-    margin: auto 0 auto 0.5rem;
     background: white;
     border: 2px solid #c4c4c4;
     padding-left: 0.5rem;
     font-size: 1rem;
-    margin-right: auto;
+    margin-right: 0.5rem;
     width: 100%;
     max-width: 15rem;
+    margin-left: 0.5rem;
+    margin-top: 0.2rem;
+}
+
+.responseCount {}
+
+@media (max-width: 550px) {
+
+    .responseCount {
+        position: absolute;
+        margin: 0 0 3.2rem 0;
+        font-size: small;
+        left: 1rem;
+    }
 }

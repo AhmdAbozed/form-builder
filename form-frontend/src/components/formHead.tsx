@@ -59,15 +59,15 @@ const FormHead = (props: {
 
             {renderSelect()}
             <div className={styles.headBtnsWrapper}>
-                <input type="button" value="Make a copy" className={styles.headButton} />
-                <input type="button" value="Form" className={styles.headButton} onClick={() => {
+                <input type="button" value="MAKE A COPY" className={styles.headButton} />
+                <input type="button" value="FORM" className={styles.headButton} onClick={() => {
                     if (cookieFuncs.hasRefreshToken()) {
                         const searchParams = new URLSearchParams(window.location.search);
                         searchParams.set("section", "build");
                         router.push('/?' + searchParams.toString())
                     }
                 }} />
-                <input type="button" value="Responses" className={styles.headButton} onClick={() => {
+                <input type="button" value="RESPONSES" className={styles.headButton} onClick={() => {
                     if (cookieFuncs.hasRefreshToken()) {
                         const searchParams = new URLSearchParams(window.location.search);
                         searchParams.set("section", "responses");

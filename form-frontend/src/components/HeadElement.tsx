@@ -26,21 +26,21 @@ const HeadElement = (props: {
     }, [])
 
     const renderLoginButton = () => {
-        
-            if (!(cookieFuncs.hasRefreshToken()) && isClient) {
-                return <input type="button" className="head-item head-button" id="signin-button" key="signin-button" aria-label="sign in" value={"Log In"} onClick={
-                    () => {
-                        props.toggleLoginForm(true)
-                    }
-                } />
-            }
+
+        if (!(cookieFuncs.hasRefreshToken()) && isClient) {
+            return <input type="button" className="head-item head-button" id="signin-button" key="signin-button" aria-label="sign in" value={"Log In"} onClick={
+                () => {
+                    props.toggleLoginForm(true)
+                }
+            } />
+        }
 
     }
 
     const renderSignoutButton = () => {
-        
+
         if (cookieFuncs.hasRefreshToken() && isClient) {
-            return <input type="button" className="head-item head-button" id="signout-button" key="signout-button" aria-label="sign out" value={"Sign Out"} onClick={signOut} />
+            return <input type="button" className="head-item head-button" id="signin-button" key="signout-button" aria-label="sign out" value={"Sign Out"} onClick={signOut} />
         }
 
     }
@@ -67,8 +67,6 @@ const HeadElement = (props: {
             <header id="head">
                 <div className="head-item" id="logo"><a href="/" aria-label="Go to homepage" className="anchor"><span /></a></div>
                 <div className="head-item dropdown" id="communities-dropdown" hidden>-communities dropdown-</div>
-                <input type="text" className="head-item" id="head-search" placeholder="Search.." />
-                <input type="button" className="head-item head-button" id="use-app-button" value={"Use App"} />
                 {renderLoginButton()}
                 {renderSignoutButton()}
 
