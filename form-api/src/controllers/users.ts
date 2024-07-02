@@ -60,18 +60,17 @@ const signUpPost = [
                 console.log("recieved validation: " + JSON.stringify(validation[0]))
                 let errorPrompt = "";
                 for (const error of validation) {
-                    errorPrompt += error.msg;
+                    errorPrompt += error.msg+'. ';
                 }
 
                 console.log("ErrorPrompt signup: " + JSON.stringify(errorPrompt))
                 throw new BaseError(403, JSON.stringify(errorPrompt));
             } else {
                 const result = await store.signup(submission)
-                //No error handling here for code creation as account is created anyway, client-side can resend code request 
-                const verifyCode = await createMailCode(result.id!)
+                //const verifyCode = await createMailCode(result.id!)
 
                 await token.createRefreshToken(req, res, result)
-
+                res.send(200)
                 console.log("result/End Of Sign Up Function: " + result)
             }
 

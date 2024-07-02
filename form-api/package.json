@@ -10,15 +10,9 @@
     "buildStart": "tsc && node dist/server.js",
     "startTestEnv": "cross-env ENV=test npm run start",
     "DB": "db-migrate --env placeholder db:create form_builder",
-    "testDB": "db-migrate --env placeholder db:create reddit_db",
-    "dropTestDB": "db-migrate db:drop reddit_db",
     "migrateUp": "db-migrate --env dev up",
     "migrateDown": "db-migrate --env dev down",
-    "migrateReset": "npm run migrateDown && npm run migrateUp",
-    "migrateUpTest": "cross-env ENV=test db-migrate up",
-    "migrateDownTest": "cross-env ENV=test db-migrate down",
-    "test": "tsc && jasmine",
-    "migrateTest": "npm run build && npm run migrateUpTest && (npm run test || npm run migrateDownTest) && npm run migrateDownTest"
+    "migrateReset": "npm run migrateDown && npm run migrateUp"
   },
   "dependencies": {
     "bcrypt": "^5.1.1",

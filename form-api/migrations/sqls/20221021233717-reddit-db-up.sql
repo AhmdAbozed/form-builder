@@ -1,7 +1,7 @@
 /* Replace with your SQL commands */
 CREATE TABLE users (id SERIAL PRIMARY KEY, username VARCHAR, email VARCHAR, password VARCHAR, verified BOOLEAN);
 INSERT INTO users ("username", "email", "password", "verified") VALUES ('admin', 'admin@admin.com', '$2b$08$xXjMfpkirSBsLbTqW5thtOMDQzyJzb6XfSZ1fXa0X3mq1udIfQ83y', true);
-CREATE TABLE forms (id SERIAL PRIMARY KEY, user_id INTEGER REFERENCES users(id) ON DELETE CASCADE, title VARCHAR, form VARCHAR, UNIQUE(title, user_id));
+CREATE TABLE forms (id SERIAL PRIMARY KEY, user_id INTEGER REFERENCES users(id) ON DELETE CASCADE, title VARCHAR, form VARCHAR, live BOOLEAN,UNIQUE(title, user_id));
 INSERT INTO forms ("user_id", "title","form") VALUES (1, 'Course Application Form', 
 
 '[{"id":"66fad11c-6ca1-4b12-aed5-fe5c1b44db4d","question":"Email","subElements":[],"type":"text"},
