@@ -11,13 +11,13 @@ const FormElement = (props: { id: string; question: string; formState: formObj; 
     //update formElement on state change
     useEffect(() => {
         let newElement: formElementObj = { id: props.id, question: questionState, subElements: [...subElements], type: props.type }
-        const oldElementIndex = props.formState.formElements.findIndex((element: formElementObj) => element.id == props.id)
-        props.formState.formElements.splice(oldElementIndex, 1, newElement)
-        const newElements = [...props.formState.formElements]
-        //props.setForm({...props.formState, formElements: props.formState.formElements.splice(oldElementIndex, 1, newElement)})
+        const oldElementIndex = props.formState.form.findIndex((element: formElementObj) => element.id == props.id)
+        props.formState.form.splice(oldElementIndex, 1, newElement)
+        const newElements = [...props.formState.form]
+        //props.setForm({...props.formState, form: props.formState.form.splice(oldElementIndex, 1, newElement)})
         //rerenders everything on any input change, no noticeable effect on performance yet
-        props.setForm({ ...props.formState, formElements: newElements })
-        localStorage.setItem("lastForm", JSON.stringify(props.formState.formElements));
+        props.setForm({ ...props.formState, form: newElements })
+        localStorage.setItem("lastForm", JSON.stringify(props.formState.form));
     }, [questionState, subElements])
 
     const zoneDragOver = (e: React.DragEvent<HTMLElement>) => {
@@ -70,7 +70,7 @@ const FormElement = (props: { id: string; question: string; formState: formObj; 
         e.currentTarget.classList.remove(styles["upperHighlight"])
         e.currentTarget.classList.remove(styles["lowerHighlight"])
 
-        const formElements = props.formState.formElements;
+        const form = props.formState.form;
 
         //The dropped-on element
         const currentTarget = e.currentTarget as HTMLElement
@@ -84,12 +84,12 @@ const FormElement = (props: { id: string; question: string; formState: formObj; 
         }
         //remove original formelement when dragged to new position 
         if (draggedElementId) {
-            const oldElementIndex = formElements.findIndex((element: formElementObj) => element.id == draggedElementId)
-            formElements.splice(oldElementIndex, 1)
+            const oldElementIndex = form.findIndex((element: formElementObj) => element.id == draggedElementId)
+            form.splice(oldElementIndex, 1)
         }
 
         //index of dropped-on element, to see where to place new element
-        const currentIndex = formElements.findIndex((e: formElementObj) => currentTarget.id == e.id)
+        const currentIndex = form.findIndex((e: formElementObj) => currentTarget.id == e.id)
 
         //Used to determine whether element is dropped near the top or bottom
         const y = e.pageY - e.currentTarget.offsetTop;
@@ -101,14 +101,14 @@ const FormElement = (props: { id: string; question: string; formState: formObj; 
             let newElement: formElementObj = { id: crypto.randomUUID(), question: e.dataTransfer.getData("question"), subElements: JSON.parse(e.dataTransfer.getData("text/plain")), type: type }
             console.log("dropped on index: " + currentIndex)
             if (y <= (currentTarget.getBoundingClientRect().height) / 2) {
-                formElements.splice(currentIndex, 0, newElement)
-                props.setForm({ ...props.formState, formElements: [...formElements] })
+                form.splice(currentIndex, 0, newElement)
+                props.setForm({ ...props.formState, form: [...form] })
                 console.log("placed up?" + currentIndex)
             }
 
             else if (y > (currentTarget.getBoundingClientRect().height) / 2) {
-                formElements.splice(currentIndex + 1, 0, newElement)
-                props.setForm({ ...props.formState, formElements: [...formElements] })
+                form.splice(currentIndex + 1, 0, newElement)
+                props.setForm({ ...props.formState, form: [...form] })
                 console.log("placed down?" + currentIndex)
             }
         }

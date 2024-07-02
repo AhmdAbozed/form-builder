@@ -10,7 +10,7 @@ import Responses from '@/components/responseBody';
 import { useSearchParams } from 'next/navigation';
 //import 'drag-drop-touch'
 import BottomSidebar from '@/components/bottomSidebar';
-
+import FormLiveCheckbox from '@/components/FormLiveCheckbox'
 export type subElementObj = {
   id: number;
   name: string;
@@ -24,15 +24,14 @@ export type formElementObj = {
 export type formObj = {
   id: number;
   title: string;
-  formElements: Array<formElementObj>
+  form: Array<formElementObj>;
+  live: boolean
 }
 export default function Home() {
-  const [savedForms, setSavedForms] = useState<Array<any>>([]);
+  const [savedForms, setSavedForms] = useState<Array<formObj>>([]);
   const { loginFormState, toggleLoginForm } = useContext(loginContext);
-  const [formState, setForm] = useState<formObj>({ id: 0, title: '', formElements: [] });
+  const [formState, setForm] = useState<formObj>({ id: 0, title: '', form: [], live: false });
   const [isClient, setIsClient] = useState(false)
-  const cookieFuncs = new cookieUtils();
-  //const pageSearchParams = new URLSearchParams(window.location.search);
 
   useEffect(() => {
     const pageSearchParams = new URLSearchParams(window.location.search);
@@ -50,14 +49,17 @@ export default function Home() {
       if (window) {
         const res = await fetch("http" + "://" + window.location.hostname + ":3003/forms/", options);
         if (res.status == 200) {
+          console.log("testingf a res", res)
           const resJSON = await res.json()
+
+          console.log("testingf a resJSON", resJSON)
           setSavedForms(resJSON)
 
           //If there's a searchParam for a form that exists, Set it to formState
           if (pageSearchParams.has("form")) {
             console.log(pageSearchParams.get("form"))
             const paramsForm = resJSON.find((form: any) => pageSearchParams.get("form") === form.title)
-            if (paramsForm) setForm({ id: paramsForm.id, title: paramsForm.title, formElements: JSON.parse(paramsForm.form) })
+            if (paramsForm) setForm({ id: paramsForm.id, title: paramsForm.title, form: JSON.parse(paramsForm.form), live: paramsForm.live })
           }
 
         }
@@ -70,14 +72,9 @@ export default function Home() {
     }
     setIsClient(true)
   }, [])
-  useEffect(() => {
-    if (cookieFuncs.hasRefreshToken()) {
-      //pageSearchParams.set("form", formState.title);
-      //searchParams.set("section", "build");
-      //const newRelativePathQuery = window.location.pathname + '?' + pageSearchParams.toString();
-      //history.pushState(null, '', newRelativePathQuery);
 
-    }
+  useEffect(() => {
+    console.log('new formstate!!', formState)
   }, [formState])
   const saveForm = async (e: React.FormEvent<HTMLFormElement>) => {
     if (isClient) {
@@ -100,43 +97,85 @@ export default function Home() {
         body: JSON.stringify(formState)
       }
       //@ts-ignore 
-      const resp = await fetch("http" + "://" + window.location.hostname + ":3003/forms/" + formState.id, options);
+      const response = await fetch("http" + "://" + window.location.hostname + ":3003/forms/" + formState.id, options);
 
-      if (resp.status == 200) {
+      if (response.status == 200) {
         console.log("Created form successfully. 200")
         pageSearchParams.set("form", formState.title)
         const newRelativePathQuery = window.location.pathname + '?' + pageSearchParams.toString();
         history.pushState(null, '', newRelativePathQuery);
+        console.log(response)
+        const newElement = await response.json()
+        console.log(newElement)
+        const oldElementIndex = savedForms.findIndex((element: formObj) => element.id == newElement.id)
+        const newSavedForms = [...savedForms]
+        if (oldElementIndex > -1) {
+          newSavedForms.splice(oldElementIndex, 1, newElement)
+        } else {
+          newSavedForms.push(newElement)
+        }
+        setSavedForms(newSavedForms)
 
-        window.location.reload()
+        //window.location.reload()
       }
       else {
         toggleLoginForm(true);
-        console.error("Internal Server Error: " + resp.status)
+        console.error("Internal Server Error: " + response.status)
       }
     }
 
   }
+  const postLiveUpdate = async (form: formObj, liveState: boolean) => {
+    form.live = liveState;
+    const options = {
+      method: "POST",
+      //credentials: "include",
+      headers: {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Credentials': 'true'
+      },
+      credentials: "include",
+      body: JSON.stringify(form)
+    }
+    //@ts-ignore 
+    const response = await fetch("http" + "://" + window.location.hostname + ":3003/forms/" + form.id, options);
 
+    if (response.status == 200) {
+      return true
+    } else return false;
+  }
   const dropzone = (e: React.DragEvent<HTMLElement>) => {
     e.preventDefault()
     const draggedElementId = e.dataTransfer.getData("id")
+    const newForm = { ...formState };
     if (draggedElementId) {
-      const oldElementIndex = formState.formElements.findIndex((element: formElementObj) => element.id == draggedElementId)
-      setForm({ ...formState, formElements: formState.formElements.splice(oldElementIndex, 1) })
+      const oldElementIndex = formState.form.findIndex((element: formElementObj) => element.id == draggedElementId)
+      newForm.form.splice(oldElementIndex, 1)
     }
     const type = e.dataTransfer.getData("type")
     if (type == 'checkbox' || type == 'text' || type == 'select') {
       const newElement: formElementObj = { id: crypto.randomUUID(), question: '', subElements: [], type: type }
-
-      setForm({ ...formState, formElements: formState.formElements.concat([newElement]) })
+      newForm.form.push(newElement)
+      setForm(newForm)
     }
   }
 
+  const changeLive = async (liveState: boolean) => {
+    const updatedForm = await postLiveUpdate(formState, liveState);
+    if (updatedForm) {
+      const ElementIndex = savedForms.findIndex((element: formObj) => element.id == formState.id)
+      const newSavedForms = [...savedForms]
+      newSavedForms[ElementIndex].live = liveState
+      formState.live = liveState;
+      setSavedForms(newSavedForms);
+      console.log('inside change live', newSavedForms[ElementIndex])
+      setForm({ ...formState });
+    }
+  }
   //map components instead of storing components in state, so that properties aren't stale
   const renderFormElements = () => {
-    console.log(formState.formElements)
-    const formComponents = formState.formElements.map((element: formElementObj) => {
+    console.log(formState)
+    const formComponents = formState.form.map((element: formElementObj) => {
       //key={element.id+ formState.id} instead of {element.id}, incase key repeats in two elements
       return <FormElement id={element.id} question={element.question} key={element.id + formState.id} formState={formState} setForm={setForm} subElements={[...element.subElements]} type={element.type} />
     })
@@ -146,6 +185,7 @@ export default function Home() {
   const renderFormHead = () => {
     if (isClient) {
       if (document.cookie.includes("refreshTokenExists")) {
+        console.log('about to render head', savedForms)
         return <FormHead toggleLoginForm={toggleLoginForm} savedForms={savedForms} formState={formState} setForm={setForm} />
       }
     }
@@ -158,7 +198,7 @@ export default function Home() {
       pageSearchParams.set("form", "")
       const newRelativePathQuery = window.location.pathname + '?' + pageSearchParams.toString();
       history.pushState(null, '', newRelativePathQuery);
-      setForm({ id: 0, title: '', formElements: [] })
+      setForm({ id: 0, title: '', form: [], live: false })
 
     }
   }
@@ -179,7 +219,8 @@ export default function Home() {
         <section className={styles.formWrapper} onDragOver={(e) => { e.preventDefault() }} onDrop={dropzone}>
           {renderFormElements()}
         </section>
-        <Sidebar saveForm={saveForm} clearForm={clearForm} />
+        <FormLiveCheckbox formState={formState} isLive={formState.live} changeLive={changeLive} mobile={true}></FormLiveCheckbox>
+        <Sidebar formState={formState} saveForm={saveForm} clearForm={clearForm} isLive={formState.live} changeLive={changeLive} />
 
       </form>
     }
@@ -195,7 +236,7 @@ export default function Home() {
   return (
 
     <div id={styles.pageWrapper}>
-      <script src="DragDropTouch.js"></script>
+      <script src="DragDropTouch.js" async></script>
 
       {renderFormHead()}
       {renderBody()}

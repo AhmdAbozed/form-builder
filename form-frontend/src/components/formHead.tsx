@@ -12,10 +12,11 @@ const FormHead = (props: {
     formState: formObj;
     savedForms: Array<any>;
 }) => {
+    console.log('inside formhead savedFroms', props.savedForms)
     const [isClient, setIsClient] = useState(false)
 
     useEffect(() => {
-        setIsClient(true)
+        //setIsClient(true)
     }, [])
 
     const router = useRouter();
@@ -30,13 +31,13 @@ const FormHead = (props: {
 
     const selectOnChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
 
-        const form = props.savedForms.find((form: any) => e.target.value === form.title)
-        if (form) {
-            pageSearchParams.set("form", form.title)
+        const selectedForm = props.savedForms.find((form: any) => e.target.value === form.title)
+        if (selectedForm) {
+            pageSearchParams.set("form", selectedForm.title)
             const newRelativePathQuery = window.location.pathname + '?' + pageSearchParams.toString();
             history.pushState(null, '', newRelativePathQuery);
-            const newFormElements = JSON.parse(form.form)
-            props.setForm({ id: form.id, title: form.title, formElements: [...newFormElements] })
+            const newFormElements = JSON.parse(selectedForm.form)
+            props.setForm({ id: selectedForm.id, title: selectedForm.title, form: [...newFormElements], live: selectedForm.live })
 
         }
     }
@@ -53,7 +54,6 @@ const FormHead = (props: {
             {renderSavedForms()}
         </select>
     }
-    renderSavedForms()
     return (
         <section className={styles.formHeadWrapper}>
 

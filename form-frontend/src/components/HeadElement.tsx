@@ -65,7 +65,7 @@ const HeadElement = (props: {
     return (
         <div id="head-parent">
             <header id="head">
-                <div className="head-item" id="logo"><a href="/" aria-label="Go to homepage" className="anchor"><span /></a></div>
+                <div className="head-item" id="logo"><a id="logo_anchor" href="/" aria-label="Go to homepage" className="anchor"><span /></a></div>
                 <div className="head-item dropdown" id="communities-dropdown" hidden>-communities dropdown-</div>
                 {renderLoginButton()}
                 {renderSignoutButton()}

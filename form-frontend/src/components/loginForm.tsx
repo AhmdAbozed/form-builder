@@ -1,4 +1,4 @@
-//Component from old reddit project, needs refactoring as it manipulates DOM directly
+//Component from an older project, needs refactoring as it manipulates DOM directly
 import React, { useState, useEffect } from "react";
 import "./../css/LoginForm.css"
 const protocol = "http";
@@ -8,7 +8,6 @@ const LoginForm = (props: {
     loginFormState: boolean;
 }) => {
     const [formState, setForm] = useState<"" | "login" | "emailSignup" | "signup" | "emailVerification">("login");
-    const [emailState, setEmail] = useState("");
     const resetErrors = () => {
         document.getElementById("invalid-username-prompt")!.hidden = true;
         document.getElementById("input-username")?.classList.remove("invalid-input")
@@ -19,7 +18,7 @@ const LoginForm = (props: {
     const submitForm = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         const target = event.target as any
-        const submission = { Username: target.elements.username.value, Password: target.elements.password.value, Email: emailState }
+        const submission = { Username: target.elements.username.value, Password: target.elements.password.value, Email: target.elements.email.value }
         const regex = /^\w{4,20}$/
         const userValidation = regex.exec(submission.Username)
         const passValidation = regex.exec(submission.Password)
@@ -41,15 +40,16 @@ const LoginForm = (props: {
                 body: JSON.stringify(submission)
             }
             const res = await fetch(protocol + "://" + window.location.hostname + ":3003/" + endpoint, options);
-            console.log(res.status)
+            console.log(res)
 
             const resJSON = await res.json()
             console.log("resJSON" + resJSON)
 
             if (res.status == 200) {
-                document.getElementById("result")!.innerHTML = "200. Response recieved"
+                document.getElementById("result")!.innerHTML = ""
                 if (formState == "signup") {
-                    setForm("emailVerification")
+                    //setForm("emailVerification")
+                    window.location.reload()
                 } else {
                     window.location.reload()
                 }
@@ -58,7 +58,7 @@ const LoginForm = (props: {
             else {
                 console.log("invalid credentials")
                 document.getElementById("invalid-username-prompt")!.hidden = false;
-                document.getElementById("invalid-username-prompt")!.innerHTML = resJSON;
+                document.getElementById("invalid-username-prompt")!.innerHTML = resJSON as string;
             }
             return res;
         }
@@ -104,7 +104,7 @@ const LoginForm = (props: {
         console.log("res" + res)
 
         if (res.status == 200) {
-            document.getElementById("result")!.innerHTML = "200. Response recieved"
+            document.getElementById("result")!.innerHTML = ""
         }
         else {
             console.log("invalid code: " + res.status)
@@ -128,7 +128,7 @@ const LoginForm = (props: {
         console.log("res" + res)
 
         if (res.status == 200) {
-            document.getElementById("result")!.innerHTML = "200. Response recieved"
+            document.getElementById("result")!.innerHTML = ""
         }
         else {
             console.log("invalid code: " + res.status)
@@ -159,7 +159,7 @@ const LoginForm = (props: {
                     </div>
 
                     <div className="container-input">
-                        <input type="text" name="password" className="signin-inputs" id="input-password" required />
+                        <input type="password" name="password" className="signin-inputs" id="input-password" required />
                         <label
                             htmlFor="input-password"
                             className="custom-placeholder"
@@ -174,45 +174,11 @@ const LoginForm = (props: {
                     </div>
 
                     <input type="submit" value="Log In" id="signin-submit" aria-label="signin submit" />
-                    <div id="signup-prompt" >New to Form-Builder? <a href="" aria-label="sign up" onClick={(e) => { e.preventDefault(); resetErrors(); setForm("emailSignup") }}>Sign up</a></div>
+                    <div id="signup-prompt" >New to Form Builder? <a href="" aria-label="sign up" onClick={(e) => { e.preventDefault(); resetErrors(); setForm("signup") }}>Sign up</a></div>
                     <div data-testid="result" id="result">
-                       
+
                     </div>
                 </section>
-            </form>
-        }
-
-        const renderEmailSignUp = () => {
-            return <form className="user-form">
-                <div id="login-body">
-                    <input key="2" type="button" id="signin-cancel" onClick={() => { props.toggleLoginForm(false) }} />
-
-                    <div data-testid="result" id="result">
-                        placeholder for testing
-                    </div>
-
-                    <div className="container-input">
-                        <input type="text" className="signin-inputs" id="input-email" required />
-                        <label htmlFor="input-email" className="custom-placeholder" id="custom-placeholder-email" onClick={() => { console.log("clicked"); document.getElementById("input-email")?.focus() }}>Email</label>
-                    </div>
-                    <div id="invalid-email-prompt" hidden>Invalid Email.</div>
-
-                    <input type="submit" value="Continue" id="signin-submit" aria-label="submit email" onClick={(e) => {
-                        e.preventDefault();
-                        const emailRegex = /^(\w+)\@\w+.com$/
-                        const validation = emailRegex.exec((document.getElementById("input-email") as HTMLInputElement).value)
-                        console.log(validation)
-                        if (validation) {
-                            setEmail((document.getElementById("input-email") as HTMLInputElement).value);
-                            setForm("signup")
-                        }
-                        else {
-                            document.getElementById("invalid-email-prompt")!.hidden = false;
-                        }
-                    }
-                    } />
-                    <div id="signup-prompt">Already a User? <a href="" onClick={(e) => { e.preventDefault(); setForm("login") }}>Log In</a></div>
-                </div>
             </form>
         }
 
@@ -227,6 +193,26 @@ const LoginForm = (props: {
                     </div>
 
                     <div className="container-input">
+                        <input type="text" className="signin-inputs" id="input-email" name="email" required  onBlur={(e) => {
+                        e.preventDefault();
+                        const emailRegex = /^(\w+)\@\w+.com$/
+                        const validation = emailRegex.exec((document.getElementById("input-email") as HTMLInputElement).value)
+                        console.log(validation)
+                        if (validation) {
+                            document.getElementById("invalid-email-prompt")!.hidden = true;
+
+                        }else{
+                            document.getElementById("invalid-email-prompt")!.hidden = false;
+
+                        }
+                    }
+                    }/>
+                        <label htmlFor="input-email" className="custom-placeholder" id="custom-placeholder-email" onClick={() => { console.log("clicked"); document.getElementById("input-email")?.focus() }}>Email</label>
+                        <div id="invalid-email-prompt" className="invalid-prompt" hidden>Invalid Email.</div>
+
+                    </div>
+                   
+                    <div className="container-input">
                         <input key="3" type="text" className="signin-inputs" id="input-username" name="username" required />
                         <label htmlFor="input-username" className="custom-placeholder" id="custom-placeholder-username" onClick={() => { console.log("clicked"); document.getElementById("input-username")?.focus() }}>Username</label>
                     </div>
@@ -240,9 +226,9 @@ const LoginForm = (props: {
                         <div id="invalid-password-prompt" className="invalid-prompt" hidden>Password must be 4-20 non-special characters</div>
                     </div>
                     <input type="submit" value="Sign Up" id="signin-submit" aria-label="signup submit" />
-                    <div id="signup-prompt">Already a Redditor? <a href="" onClick={(e) => { e.preventDefault(); resetErrors(); setForm("login") }}>Log In</a></div>
+                    <div id="signup-prompt">Already a User? <a href="" onClick={(e) => { e.preventDefault(); resetErrors(); setForm("login") }}>Log In</a></div>
                     <div data-testid="result" id="result">
-                        
+
                     </div>
                 </div>
             </form>
@@ -263,16 +249,15 @@ const LoginForm = (props: {
                         <label htmlFor="input-code" className="custom-placeholder" id="custom-placeholder-username" onClick={() => { console.log("clicked"); document.getElementById("input-username")?.focus() }}>4-digits Code</label>
                     </div>
                     <input type="submit" value="Verify" id="signin-submit" aria-label="signup submit" />
-                    <div id="signup-prompt"><a href="" onClick={async(e)=>{e.preventDefault();await resendEmailCode()}}>Resend Code?</a></div>
+                    <div id="signup-prompt"><a href="" onClick={async (e) => { e.preventDefault(); await resendEmailCode() }}>Resend Code?</a></div>
                     <div data-testid="result" id="result">
-    
+
                     </div>
                 </div>
             </form>
         }
         switch (formState) {
             case "login": ; return renderLogIn(); break;
-            case "emailSignup": return renderEmailSignUp(); break;
             case "signup": return renderSignUp(); break;
             case "emailVerification": return renderEmailVerification()
         }

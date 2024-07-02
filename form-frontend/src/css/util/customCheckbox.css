@@ -36,6 +36,7 @@ found online
     position: absolute;
     top: 3px;
     width: 14px;
+    cursor: pointer;
   }
 
    input[type=checkbox] {

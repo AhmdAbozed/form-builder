@@ -1,8 +1,11 @@
 "use client"
 import styles from '../css/sidebar.module.css'
 import '../css/util/customCheckbox.css'
+import FormLiveCheckbox from '@/components/FormLiveCheckbox'
 import { useEffect, useState } from 'react'
-const Sidebar = (props: { saveForm: any, clearForm: any }) => {
+import FormElement from './formElement'
+import { formObj } from '@/app/page'
+const Sidebar = (props: { formState: formObj, saveForm: any, clearForm: any, isLive: boolean, changeLive: any }) => {
   const [isClient, setIsClient] = useState(false)
  
   useEffect(() => {
@@ -18,8 +21,8 @@ const Sidebar = (props: { saveForm: any, clearForm: any }) => {
   }
 
   const renderSaveBtn = () => {
-    if (isClient) {
-      return <input type="submit" value="SAVE & REPLACE" className={styles.sidebarButton} id={styles.saveBtn} />
+    if (isClient && props.formState.id) {
+      return <input type="submit" value="SAVE CHANGES" className={styles.sidebarButton} id={styles.saveBtn} />
     }
     else return <input type="submit" value="SAVE FORM" className={styles.sidebarButton} id={styles.saveBtn} />
   }
@@ -40,11 +43,7 @@ const Sidebar = (props: { saveForm: any, clearForm: any }) => {
           {isClient ? renderSaveBtn() : null}
           <button type="button" className={styles.sidebarButton} id={styles.deleteBtn} onClick={(e: any) => { props.clearForm(); e.target.blur() }}>CLEAR FORM</button>
         </section>
-        <section className={styles.liveCheckWrapper}>
-          <input type="checkbox" id='liveCheckbox' className="sc-gJwTLC ikxBAC" />
-          <label htmlFor="liveCheckbox" className={styles.checkboxLabel}>Form Live</label>
-        </section>
-
+        <FormLiveCheckbox formState={props.formState} isLive={props.isLive} changeLive={props.changeLive} mobile={false}></FormLiveCheckbox>
       </div>
 
     </section>

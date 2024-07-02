@@ -4,7 +4,7 @@ import styles from '@/css/fillPage.module.css'
 import { protocol } from '@/util/utilFuncs';
 import { question } from '@/app/fill/[id]/page';
 import { formElementObj, formObj } from '@/app/page';
-import ResponseElement from './responseElement';
+import ResponseElement from '@/components/responseElement';
 import { subElementObj } from '@/app/page';
 const Responses = (props: { formState: formObj }) => {
   type responseElement = {
