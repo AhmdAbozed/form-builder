@@ -85,13 +85,13 @@ Similar in functionality to google forms.
 
 ## Usage
 <h3 style="margin-top:0">1. Building Form:</h3>
-To build a form simply drag elements from inputs Panel on the right to form area then save form when you're done. Toggle the form live checkbox then share provided url for users to fill the form. Login required to save form. 
 <img src="images/form1.png" alt="Logo"  style="margin: 0 auto; max-width: 60rem; width: 90vw;   transform: translate(); display:block; margin-bottom:1rem; ">
+To build a form simply drag elements from inputs Panel on the right to form area then save form when you're done. Toggle the form live checkbox then share provided url for users to fill the form. Login required to save form. 
 
-<h3 style="margin-top:0.5rem margin-bottom:0">2. Examining responses:</h3>To examine form responses, click RESPONSES at header, choose a response if any from the select input, the filled form will then appear. 
-
-
+<h3 style="margin-top:0.5rem margin-bottom:0">2. Examining responses:</h3>
 <img src="images/form4.png" alt="Logo" style="margin: 0 auto; max-width: 60rem; width: 90vw;   transform: translate(); display:block; margin-bottom:1rem">
+To examine form responses, click RESPONSES at header, choose a response if any from the select input, the filled form will then appear. 
+
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
