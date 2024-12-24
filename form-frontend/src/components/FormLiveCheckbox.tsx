@@ -1,9 +1,9 @@
 "use client"
-import { formObj } from '@/app/page'
+import { formObj } from '@/pages/index'
 import styles from '../css/sidebar.module.css'
-import '../css/util/customCheckbox.css'
+import style from '../css/util/customCheckbox.module.css'
 import { useEffect, useState } from 'react'
-const formLiveCheckbox = (props: { isLive: boolean, changeLive: any, mobile: boolean, formState: formObj }) => {
+const FormLiveCheckbox = (props: { isLive: boolean, changeLive: any, mobile: boolean, formState: formObj }) => {
 
     const [renderLive, setRenderLive] = useState(false);
     useEffect(()=>{
@@ -18,7 +18,7 @@ const formLiveCheckbox = (props: { isLive: boolean, changeLive: any, mobile: boo
     return (
         <section>
             <div className={`${styles.liveCheckWrapper} ${props.mobile ? styles.mobileDisplay : ''} `}>
-                <input type="checkbox" id='liveCheckbox' className="sc-gJwTLC ikxBAC" checked={props.isLive || false} onChange={(e) => { console.log(e.target.checked); props.changeLive(e.target.checked) }} />
+                <input type="checkbox" id='liveCheckbox'  className={`${style.ikxBAC}`} checked={props.isLive || false} onChange={(e) => {props.changeLive(e.target.checked) }} />
                 <label htmlFor="liveCheckbox" className={styles.checkboxLabel}>Form Live</label>
             </div>
             {renderLiveLink()}
@@ -26,4 +26,4 @@ const formLiveCheckbox = (props: { isLive: boolean, changeLive: any, mobile: boo
     )
 }
 
-export default formLiveCheckbox
+export default FormLiveCheckbox

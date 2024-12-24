@@ -1,16 +1,24 @@
-"use client"
+
 import styles from '@/css/fillPage.module.css'
 import { FormEvent, FormEventHandler, createContext, useContext, useEffect, useState } from 'react';
 import { protocol } from '@/util/utilFuncs';
-import InputFormElement from '@/components/inputFormElement';
-//can also use useRouter() query to get params
-export type question = { question: string, answer: string }
-export default function FormDisplay({ params }: { params: { id: number } }) {
+import InputFormElement from '@/components/InputFormElement';
+import { useRouter } from 'next/router';
 
+export type question = { question: string, answer: string }
+
+export default function FormDisplay() {
+
+
+  const router = useRouter();
+  console.log('query is ',router) 
+  const { id } = router.query; // Access the 'id' from the URL
   const [formElements, setFormElements] = useState<Array<any>>([]);
   const [submitBtnDisabled, setSubmitDisabled] = useState(false);
   const [formLive, setFormLive] = useState(true)
   useEffect(() => {
+    console.log(id)
+    if(!id)return;
     const getForm = async () => {
       const options = {
         method: "GET",
@@ -18,7 +26,8 @@ export default function FormDisplay({ params }: { params: { id: number } }) {
           'Content-Type': 'application/json',
         }
       }
-      const res = await fetch(protocol + "://" + window.location.hostname + ":3003/forms/" + params.id
+      console.log(location.protocol)
+      const res = await fetch(location.protocol + "//" + window.location.hostname + ":3003/forms/" + id
         , options);
       console.log(res.status)
       if (res.status == 200) {
@@ -33,7 +42,7 @@ export default function FormDisplay({ params }: { params: { id: number } }) {
     }
 
     getForm()
-  }, [])
+  }, [id])
   useEffect(() => {
     console.log(submitBtnDisabled)
   }, [submitBtnDisabled])
@@ -61,7 +70,7 @@ export default function FormDisplay({ params }: { params: { id: number } }) {
       },
       body: JSON.stringify(submission)
     }
-    const res = await fetch(protocol + "://" + window.location.hostname + ":3003/forms/" + params.id + "/submissions"
+    const res = await fetch(location.protocol + "//" + window.location.hostname + ":3003/forms/" + id + "/submissions"
       , options);
     if (res.status == 200) {
       setSubmitDisabled(true)
@@ -75,7 +84,6 @@ export default function FormDisplay({ params }: { params: { id: number } }) {
       return <p>Form is not accepting responses.</p>
     }
   }
-  const renderSubmitBtns = ()=>{}
   return (
     <main className={styles.main}>
       <form className={styles.formWrapper} onSubmit={submitForm}>

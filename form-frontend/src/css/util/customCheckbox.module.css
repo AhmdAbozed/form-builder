@@ -11,6 +11,7 @@ found online
     margin: 0;
     position: relative;
     width: 30px;
+    margin: auto 0;
   }
 
    .ikxBAC::before {
@@ -39,9 +40,6 @@ found online
     cursor: pointer;
   }
 
-   input[type=checkbox] {
-    cursor: default;
-  }
 
    .ikxBAC:hover {
     background-color: #c9cbcd;

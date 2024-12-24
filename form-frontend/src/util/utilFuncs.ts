@@ -7,3 +7,7 @@ function getProtocol(){
 }
 
 export const protocol = getProtocol();
+
+export function isSignedIn(){
+    return document.cookie.includes("refreshTokenExists");
+}

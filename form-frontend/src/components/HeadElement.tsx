@@ -1,78 +1,107 @@
-"use client"
-//import { useParams } from "react-router-dom"
-import React, { useEffect, useState } from "react"
+"use client";
+
+import React, { useEffect, useState } from "react";
 import cookieUtils from "../util/AccessControl";
-import "./../css/Head.css"
-import { protocol } from "../util/utilFuncs";
+import styles from "../css/Head.module.css";
+import { isSignedIn, protocol } from "../util/utilFuncs";
+import Link from "next/link";
+
 const cookieFuncs = new cookieUtils();
+
 export const verifyLogin = (e: any, toggleLogin: any) => {
-    if (document.cookie.includes("refreshTokenExists")) {
+    if (isSignedIn()) {
         return true;
     }
-    e.preventDefault()
-    toggleLogin(true)
+    e.preventDefault();
+    toggleLogin(true);
     return false;
-}
+};
 
 const HeadElement = (props: {
     toggleLoginForm: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
-    //let { id } = useParams();
     let id = 1;
-    const [isClient, setIsClient] = useState(false)
+    const [isClient, setIsClient] = useState(false);
+
     useEffect(() => {
-        //used to prevent server side rendering for sign in/out buttons, which causes "hydration" mismatch
-        setIsClient(true)
-    }, [])
+        // Used to prevent server-side rendering for sign in/out buttons, which causes "hydration" mismatch
+        setIsClient(true);
+    }, []);
 
     const renderLoginButton = () => {
-
-        if (!(cookieFuncs.hasRefreshToken()) && isClient) {
-            return <input type="button" className="head-item head-button" id="signin-button" key="signin-button" aria-label="sign in" value={"Log In"} onClick={
-                () => {
-                    props.toggleLoginForm(true)
-                }
-            } />
+        if (!cookieFuncs.hasRefreshToken() && isClient) {
+            return (
+                <input
+                    type="button"
+                    className={`${styles.head_item} ${styles.head_button}`}
+                    id={styles.signin_button}
+                    key="signin-button"
+                    aria-label="sign in"
+                    value="Log In"
+                    onClick={() => {
+                        props.toggleLoginForm(true);
+                    }}
+                />
+            );
         }
-
-    }
+    };
 
     const renderSignoutButton = () => {
-
         if (cookieFuncs.hasRefreshToken() && isClient) {
-            return <input type="button" className="head-item head-button" id="signin-button" key="signout-button" aria-label="sign out" value={"Sign Out"} onClick={signOut} />
+            return (
+                <input
+                    type="button"
+                    className={`${styles.head_item} ${styles.head_button}`}
+                    id={styles.signout_button}
+                    key="signout-button"
+                    aria-label="sign out"
+                    value="Sign Out"
+                    onClick={signOut}
+                />
+            );
         }
+    };
 
-    }
     const signOut = async () => {
-        //const options = 
-        const res = await fetch(protocol + "://" + window.location.hostname + ":3003/users/signout", {
+        const res = await fetch(`${protocol}://${window.location.hostname}:3003/users/signout`, {
             method: "GET",
-
-            credentials: "include"
+            credentials: "include",
         });
 
-        console.log(res.status)
-        if (res.status == 200) {
-            console.log("Signed Out")
-            window.location.reload()
+        console.log(res.status);
+        if (res.status === 200) {
+            console.log("Signed Out");
+            window.location.reload();
+        } else {
+            console.log("Error Signing Out");
         }
-        else {
-            console.log("Si")
-        }
-    }
+    };
 
     return (
-        <div id="head-parent">
-            <header id="head">
-                <div className="head-item" id="logo"><a id="logo_anchor" href="/" aria-label="Go to homepage" className="anchor"><span /></a></div>
-                <div className="head-item dropdown" id="communities-dropdown" hidden>-communities dropdown-</div>
+        <div id={styles.head_parent}>
+            <header id={styles.head}>
+                <div className={styles.head_item} id={styles.logo}>
+                    <Link
+                        id={styles.logo_anchor}
+                        href="/"
+                        aria-label="Go to homepage"
+                        className={styles.anchor}
+                    >
+                        <span />
+                    </Link>
+                </div>
+                <div
+                    className={`${styles.head_item} ${styles.dropdown}`}
+                    id={styles.communities_dropdown}
+                    hidden
+                >
+                    -communities dropdown-
+                </div>
                 {renderLoginButton()}
                 {renderSignoutButton()}
-
             </header>
         </div>
-    )
-}
+    );
+};
 
-export default HeadElement
+export default HeadElement;

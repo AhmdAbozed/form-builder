@@ -1,11 +1,10 @@
-#head-parent {
+#head_parent {
     z-index: 3;
     position: relative;
     width: 100%;
-
 }
 
-.head-button {
+.head_button {
     border: none;
     background-color: inherit;
     cursor: pointer;
@@ -14,8 +13,8 @@
     height: 1.6rem;
 }
 
-.head-button,
-.head-item {
+.head_button,
+.head_item {
     background-size: contain;
     background-position: center;
     background-repeat: no-repeat;
@@ -24,14 +23,12 @@
 #head {
     background: linear-gradient(0deg, rgb(25 36 54), rgb(25 37 55) 50%, rgb(25 36 55));
     display: flex;
-
     flex-direction: row;
     align-content: space-between;
     height: 1.8rem;
-
 }
 
-#logo_anchor{
+#logo_anchor {
     width: 100%;
     height: 100%;
     display: block;
@@ -44,19 +41,16 @@
     background-size: cover;
     margin-bottom: 0.5rem;
     transform: translateX(-0.5rem);
-
 }
 
-
-#use-app-button {
-
+#use_app_button {
     margin-left: auto;
     background-color: var(--highlight-background);
     padding: 0 0.6rem 0 0.6rem;
     border-radius: 100px;
 }
 
-/*#signin-button{
+/*#signin_button{
     color: rgb(255, 163, 130);
     font-size:1rem;
     height: 1.5rem;
@@ -65,26 +59,26 @@
     border-radius: 100px;
 }*/
 
-#signin-button {
+#signin_button {
     margin-left: auto;
     background-color: var(--highlight-background);
     padding: 0 1rem 0 1rem;
     border-radius: 100px;
 }
 
-#new-post-button {
+#signout_button {
+    margin-left: auto;
+}
 
+#new_post_button {
     background-image: url("../../public/resources/plus.svg");
-
     width: 1.3rem;
     height: auto;
 }
 
-#sidebar-button {
+#sidebar_button {
     /*The svg's color is F2F0FF*/
     background-image: url("../../public/resources/menu-burger.svg");
-
-
     width: 1.3rem;
     height: auto;
     margin-right: 0.25rem;
@@ -100,37 +94,34 @@
         width: 9rem;
         transform: translateX(-2rem);
         margin-bottom: 0.5rem;
-
     }
 
-    .head-button {
+    .head_button {
         margin-top: 0.2rem;
         height: 2rem;
         width: 5rem;
     }
 
-    .head-item {
+    .head_item {
         margin-left: 0.7rem;
     }
 
-    #head-search {
+    #head_search {
         display: block;
         height: 1.6rem;
         padding-left: 1rem;
         border-radius: 50px;
         background-color: rgb(71, 78, 93);
         color: white;
-
         width: 40%;
         margin: auto;
         border: none;
     }
-
 }
 
 /*
 
-.Head-item{
+.Head_item {
     flex: 1;
     border: 0.1rem red solid;
 }

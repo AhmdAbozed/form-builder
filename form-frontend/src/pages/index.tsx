@@ -1,16 +1,15 @@
-"use client"
 import styles from '@/css/page.module.css';
-import Sidebar from '@/components/sidebar';
-import FormHead from '@/components/formHead';
-import { createContext, useContext, useEffect, useRef, useState } from 'react';
-import FormElement from '../components/formElement'
-import { loginContext } from "./layout";
-import cookieUtils from '@/util/AccessControl';
-import Responses from '@/components/responseBody';
+import Sidebar from '@/components/Sidebar';
+import FormHead from '@/components/FormHead';
+import { useContext, useEffect, useState } from 'react';
+import FormElement from '../components/FormElement'
+import { loginContext } from "../components/RootLayout";
+import Responses from '@/components/ResponseBody';
 import { useSearchParams } from 'next/navigation';
 //import 'drag-drop-touch'
-import BottomSidebar from '@/components/bottomSidebar';
+import BottomSidebar from '@/components/BottomSidebar';
 import FormLiveCheckbox from '@/components/FormLiveCheckbox'
+import { isSignedIn } from '@/util/utilFuncs';
 export type subElementObj = {
   id: number;
   name: string;
@@ -28,9 +27,10 @@ export type formObj = {
   live: boolean
 }
 export default function Home() {
-  const [savedForms, setSavedForms] = useState<Array<formObj>>([]);
+  const [savedFormsState, setSavedForms] = useState<Array<formObj>>([]);
   const { loginFormState, toggleLoginForm } = useContext(loginContext);
   const [formState, setForm] = useState<formObj>({ id: 0, title: '', form: [], live: false });
+  //clientside check
   const [isClient, setIsClient] = useState(false)
 
   useEffect(() => {
@@ -47,7 +47,7 @@ export default function Home() {
       }
 
       if (window) {
-        const res = await fetch("http" + "://" + window.location.hostname + ":3003/forms/", options);
+        const res = await fetch(location.protocol + "//" + window.location.hostname + ":3003/forms/", options);
         if (res.status == 200) {
           console.log("testingf a res", res)
           const resJSON = await res.json()
@@ -67,7 +67,7 @@ export default function Home() {
 
     }
 
-    if (document.cookie.includes("refreshTokenExists")) {
+    if (isSignedIn()) {
       getForms();
     }
     setIsClient(true)
@@ -76,28 +76,31 @@ export default function Home() {
   useEffect(() => {
     console.log('new formstate!!', formState)
   }, [formState])
-  const saveForm = async (e: React.FormEvent<HTMLFormElement>) => {
+  const saveForm = async (updating: boolean) => {
     if (isClient) {
-
-      e.preventDefault();
+      console.log(formState.live)
       const pageSearchParams = new URLSearchParams(window.location.search);
-      if (!document.cookie.includes("refreshTokenExists")) {
+      if (!isSignedIn()) {
         toggleLoginForm(true);
         return;
       }
 
-      const options = {
+      const options: any = {
         method: "POST",
         //credentials: "include",
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/json', 
           'Access-Control-Allow-Credentials': 'true'
         },
         credentials: "include",
         body: JSON.stringify(formState)
       }
-      //@ts-ignore 
-      const response = await fetch("http" + "://" + window.location.hostname + ":3003/forms/" + formState.id, options);
+      let response;
+      if (updating && Number(formState.id)) {
+        response = await fetch("http" + "://" + window.location.hostname + ":3003/forms/update/" + formState.id, options);
+      } else {
+        response = await fetch("http" + "://" + window.location.hostname + ":3003/forms/" , options);
+      }
 
       if (response.status == 200) {
         console.log("Created form successfully. 200")
@@ -105,14 +108,14 @@ export default function Home() {
         const newRelativePathQuery = window.location.pathname + '?' + pageSearchParams.toString();
         history.pushState(null, '', newRelativePathQuery);
         console.log(response)
-        const newElement = await response.json()
-        console.log(newElement)
-        const oldElementIndex = savedForms.findIndex((element: formObj) => element.id == newElement.id)
-        const newSavedForms = [...savedForms]
-        if (oldElementIndex > -1) {
-          newSavedForms.splice(oldElementIndex, 1, newElement)
+        const newForm = await response.json()
+        console.log(newForm)
+        const oldFormIndex = savedFormsState.findIndex((element: formObj) => element.id == newForm.id)
+        const newSavedForms = [...savedFormsState]
+        if (oldFormIndex > -1) {
+          newSavedForms.splice(oldFormIndex, 1, newForm)
         } else {
-          newSavedForms.push(newElement)
+          newSavedForms.push(newForm)
         }
         setSavedForms(newSavedForms)
 
@@ -160,17 +163,12 @@ export default function Home() {
     }
   }
 
-  const changeLive = async (liveState: boolean) => {
-    const updatedForm = await postLiveUpdate(formState, liveState);
-    if (updatedForm) {
-      const ElementIndex = savedForms.findIndex((element: formObj) => element.id == formState.id)
-      const newSavedForms = [...savedForms]
-      newSavedForms[ElementIndex].live = liveState
-      formState.live = liveState;
-      setSavedForms(newSavedForms);
-      console.log('inside change live', newSavedForms[ElementIndex])
-      setForm({ ...formState });
+  const changeLive = async (newLive: boolean) => {
+    if (isSignedIn() && formState.id) {
+      formState.live = newLive;
+      const updatedForm = await saveForm(true);
     }
+
   }
   //map components instead of storing components in state, so that properties aren't stale
   const renderFormElements = () => {
@@ -184,9 +182,9 @@ export default function Home() {
 
   const renderFormHead = () => {
     if (isClient) {
-      if (document.cookie.includes("refreshTokenExists")) {
-        console.log('about to render head', savedForms)
-        return <FormHead toggleLoginForm={toggleLoginForm} savedForms={savedForms} formState={formState} setForm={setForm} />
+      if (isSignedIn()) {
+        console.log('about to render head', savedFormsState)
+        return <FormHead toggleLoginForm={toggleLoginForm} savedFormsState={savedFormsState} formState={formState} setForm={setForm} />
       }
     }
 
@@ -211,7 +209,7 @@ export default function Home() {
       return <Responses formState={formState} />
     }
     else {
-      return <form className={styles.main} onSubmit={saveForm}>
+      return <form className={styles.main} onSubmit={(e) =>{e.preventDefault()}}>
 
         <input type="text" name="" id="" className={styles.formTitle} placeholder='Enter Form Title..' value={formState.title} onChange={(e) => {
           setForm({ ...formState, title: e.target.value })

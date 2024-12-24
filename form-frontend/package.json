@@ -5,6 +5,8 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "moveBuild": "rm -rf ../form-api/dist/out && mv ./out ../form-api/dist",
+    "buildMv": "npm run build && npm run moveBuild",
     "start": "next start",
     "lint": "next lint"
   },
@@ -21,6 +23,7 @@
     "typescript": "5.2.2"
   },
   "devDependencies": {
-    "eslint-plugin-react-hooks": "^4.6.0"
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "mini-css-extract-plugin": "^2.9.2"
   }
 }

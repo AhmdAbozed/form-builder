@@ -1,5 +1,6 @@
 "use client"
 import React from "react"
+import { isSignedIn } from "./utilFuncs";
 //import { Navigate } from "react-router-dom";
 class cookieUtils {
     //See backend for why there are "fake" cookies
@@ -12,7 +13,7 @@ class cookieUtils {
 
     hasRefreshToken() {
         if (typeof document !== 'undefined') {
-            if (document.cookie.includes("refreshTokenExists")) {
+            if (isSignedIn()) {
                 return true;
             }
             else {
