@@ -69,7 +69,7 @@ const signUpPost = [
                 const result = await store.signup(submission)
                 //const verifyCode = await createMailCode(result.id!)
 
-                await token.createRefreshToken(req, res, result)
+                await token.createRefreshToken(req, res, result, next)
                 res.send(200)
                 console.log("result/End Of Sign Up Function: " + result)
             }
@@ -112,7 +112,7 @@ const signInPost = [
 
             //createToken(res, result)
             if (result[0]) {
-                token.createRefreshToken(req, res, result[0])
+                token.createRefreshToken(req, res, result[0], next)
             }
             else {
                 throw new BaseError(403, "Incorrect Username or Password");
@@ -172,7 +172,7 @@ const UsersRouter = Router()
 UsersRouter.post("/users/signup", signUpPost);
 UsersRouter.get("/users/signout", signOut);
 UsersRouter.post("/users/signin", signInPost);
-UsersRouter.post("/users/verifyemail", tokenFuncs.verifyTokensJWT.bind(tokenFuncs), verifyEmail);
-UsersRouter.post("/users/sendemailcode", tokenFuncs.verifyTokensJWT.bind(tokenFuncs), resendEmailCode);
+UsersRouter.post("/users/verifyemail", tokenFuncs.verifyAllTokens.bind(tokenFuncs), verifyEmail);
+UsersRouter.post("/users/sendemailcode", tokenFuncs.verifyAllTokens.bind(tokenFuncs), resendEmailCode);
 
 export default UsersRouter;

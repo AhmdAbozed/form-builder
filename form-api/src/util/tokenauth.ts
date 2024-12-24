@@ -24,7 +24,7 @@
     add both to cookies then auth
   */
 
-import { Request, Response } from "express";
+import e, { Request, Response } from "express";
 import dotenv from "dotenv";
 import jwt, { Secret } from "jsonwebtoken";
 import client from "../database.js";
@@ -35,10 +35,17 @@ dotenv.config();
 
 const { tokenSecret } = process.env;
 class tokenClass {
-  async createAccessToken(req: Request, res: Response, next?: any) {
-    const refreshTokenVerified = await this.verifyRefreshTokenDB(res, req.cookies.refreshToken);
-    if (refreshTokenVerified) {
-      console.log("Inside createAccessToken");
+  async createAccessToken(req: Request, res: Response, next: any, middleware: boolean, verifyRefresh: boolean) {
+    try {
+
+      console.log('the cookie on create access: ', req.cookies.refreshToken);
+      if (verifyRefresh) {
+        const refreshTokenVerified = await this.verifyRefreshTokenDB(res, req.cookies.refreshToken, next);
+        if (!refreshTokenVerified) {
+          throw new BaseError(401, "refresh token missing/expired.");
+        }
+      }
+      console.log("Inside createAccess");
       const options = {
         expires: new Date(Date.now() + 10 * 60 * 1000),
         secure: false,
@@ -55,19 +62,21 @@ class tokenClass {
         secure: false,
         httpOnly: false,
       });
-      if (typeof next == "function") {
-        //function is either called independently or part of middleware, then it has a next
-        console.log("next found inside createaccesstoken");
+      if (middleware) {
         next();
-        return;
       }
-      res.status(200).send(JSON.stringify("access token created"));
-    } else {
-      throw new BaseError(401, "refresh token missing/expired.");
+      else {
+        res.status(200).send(JSON.stringify("access and refresh created"))
+      }
+
+
+    }
+    catch (err) {
+      next(err)
     }
   }
 
-  async createRefreshToken(req: Request, res: Response, user: user): Promise<any> {
+  async createRefreshToken(req: Request, res: Response, user: user, next: any): Promise<any> {
     console.log("inside createrefresh");
 
     const token = jwt.sign({ user: user.username, user_id: user.id }, tokenSecret as string);
@@ -89,10 +98,10 @@ class tokenClass {
     });
 
     console.log("set refresh token cookies");
-    //this.createAccessToken(req, res);
+    this.createAccessToken(req, res, next, false, false);
   }
 
-  verifyTokensJWT(req: Request, res: Response, next: any) {
+  verifyAllTokens(req: Request, res: Response, next: any) {
     console.log("inside verifytokensJWT");
 
     if (req.cookies.refreshToken) {
@@ -109,7 +118,7 @@ class tokenClass {
       console.log("Access Token verified");
       next();
     } else {
-      this.createAccessToken(req, res, next);
+      this.createAccessToken(req, res, next, true, true);
     }
   }
 
@@ -122,7 +131,7 @@ class tokenClass {
     });
     return true;
   }
-  async verifyRefreshTokenDB(res: Response, refreshToken: string) {
+  async verifyRefreshTokenDB(res: Response, refreshToken: string, next: any) {
     console.log("inside verifyrefresh");
 
     try {
@@ -144,8 +153,7 @@ class tokenClass {
         throw new BaseError(401, "refresh token missing/expired.");
       }
     } catch (error) {
-      console.log("Caught error in refresh: " + JSON.stringify(error));
-      throw new Error(JSON.stringify(error));
+      next(error)
     }
   }
 }

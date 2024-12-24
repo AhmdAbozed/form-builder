@@ -16,7 +16,6 @@ const postForm = async (req: Request, res: Response, next: any) => {
     const user_id = getIdFromToken(req);
     if (user_id) {
       const form: form = {
-        id: Number(req.params.form_id),
         user_id: user_id,
         title: req.body.title,
         form: req.body.form,
@@ -36,6 +35,35 @@ const postForm = async (req: Request, res: Response, next: any) => {
     next(err);
   }
 };
+
+const updateForm = async (req: Request, res: Response, next: any) => {
+  try {
+    const user_id = getIdFromToken(req);
+    if(!Number(req.params.form_id)) throw new BaseError(400, "Failed to update form, invalid form id");
+    if (user_id) {
+      const form: form = {
+        id: Number(req.params.form_id),
+        user_id: user_id,
+        title: req.body.title,
+        form: req.body.form,
+        live: req.body.live,
+      };
+      console.log('updating form: ',form)
+      const result = await store.update(form);
+      if (result) {
+        res.send(result);
+
+        return;
+      }else{
+        throw new BaseError(400, "Failed to update form, form not found");
+      }
+    } else {
+      throw new BaseError(400, "Failed to update form, invalid user id");
+    }
+  } catch (err) {
+    next(err);
+  }
+};
 const getForm = async (req: Request, res: Response, next: any) => {
   try {
     if (Number(req.params.id)) {
@@ -43,7 +71,6 @@ const getForm = async (req: Request, res: Response, next: any) => {
       console.log("form_id: " + form_id);
       const result = await store.getForm(form_id);
       
-      console.log('form is live ', result.live)
       if (result) {
         if (result.live) {
           res.send(result);
@@ -95,12 +122,18 @@ FormsRouter.get("/forms/:id", getForm);
 
 FormsRouter.get(
   "/forms/",
-  tokenFuncs.verifyTokensJWT.bind(tokenFuncs),
+  tokenFuncs.verifyAllTokens.bind(tokenFuncs),
   getUserForms
 );
 FormsRouter.post(
-  "/forms/:form_id",
-  tokenFuncs.verifyTokensJWT.bind(tokenFuncs),
+  "/forms",
+  tokenFuncs.verifyAllTokens.bind(tokenFuncs),
   postForm
 );
+FormsRouter.post(
+  "/forms/update/:form_id",
+  tokenFuncs.verifyAllTokens.bind(tokenFuncs),
+  updateForm
+);
+
 export default FormsRouter;

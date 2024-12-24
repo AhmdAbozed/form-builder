@@ -15,6 +15,7 @@ export class BaseError extends Error{
 //If caught error is unexpected/unknown (has undefined statusCode, not a custom error), exit the process, else handle it.
 
 export const sendError = (err: BaseError,req: Request,res: Response,next:any)=>{
+    console.log('caught an error')
     if(!err.statusCode){
         console.error(err);
         res.status(500).send(JSON.stringify("Unexpected server error"))

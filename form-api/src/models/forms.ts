@@ -25,12 +25,26 @@ export class formsStore {
       ]);
       conn.release();
 
-      if (results.rows[0]) {
-        //console.log("after form insert: "+JSON.parse(results.rows[0].form)[0].id)
-        console.log("after form insert: " + results.rows[0].form);
+      return results.rows[0];
+    } catch (err) {
+      throw new Error(`${err}`);
+    }
+  }
 
-        //console.log(JSON.parse(results.rows[0].form[0]))
-      }
+  async update(form: form): Promise<form> {
+    try {
+      const conn = await client.connect();
+
+      const sql = "UPDATE forms SET title = ($1), form = ($2), live = ($3) WHERE id = ($4) AND user_id = ($5) RETURNING *";
+      //without json.stringify, JSON is stored with \" instead of "
+      const results = await conn.query(sql, [
+        form.title,
+        JSON.stringify(form.form),
+        form.live,
+        form.id,
+        form.user_id
+      ]);
+      conn.release();
       return results.rows[0];
     } catch (err) {
       throw new Error(`${err}`);
