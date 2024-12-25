@@ -64,6 +64,27 @@ const updateForm = async (req: Request, res: Response, next: any) => {
     next(err);
   }
 };
+
+const deleteForm = async (req: Request, res: Response, next: any) => {
+  try {
+    const user_id = getIdFromToken(req);
+    if(!Number(req.params.form_id)) throw new BaseError(400, "Failed to delete form, invalid form id");
+    if (user_id) {
+      console.log('deleting form: ',req.params.form_id)
+      const result = await store.delete(Number(req.params.form_id), Number(user_id));
+      if (result) {
+        res.send(result);
+        return;
+      }else{
+        throw new BaseError(400, "Failed to delete form, form not found");
+      }
+    } else {
+      throw new BaseError(400, "Failed to delete form, invalid user id");
+    }
+  } catch (err) {
+    next(err);
+  }
+};
 const getForm = async (req: Request, res: Response, next: any) => {
   try {
     if (Number(req.params.id)) {
@@ -134,6 +155,11 @@ FormsRouter.post(
   "/forms/update/:form_id",
   tokenFuncs.verifyAllTokens.bind(tokenFuncs),
   updateForm
+);
+FormsRouter.post(
+  "/forms/delete/:form_id",
+  tokenFuncs.verifyAllTokens.bind(tokenFuncs),
+  deleteForm
 );
 
 export default FormsRouter;

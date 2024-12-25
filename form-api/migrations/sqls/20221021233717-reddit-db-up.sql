@@ -9,6 +9,6 @@ INSERT INTO forms ("user_id", "title","form") VALUES (1, 'Course Application For
 {"id":"71cd4a42-ff55-4733-a130-6b749ca9b858","question":"Chosen Track","subElements":[{"id":0,"name":"Web Development"},{"id":1,"name":"Mobile App Development"},{"id":2,"name":"Embedded Systems"},{"id":3,"name":"DevOps Engineering"},{"id":4,"name":"Networking Fundamentals"}],"type":"select"},
 {"id":"2a60c614-a93f-442d-a20f-953c24f030e4","question":"How have you learned of our Course Program?","subElements":[{"id":0, "name":"Facebook"},{"id":1, "name":"Youtube"},{"id":2, "name":"Reddit"},{"id":3, "name":"Recommended by a Friend"}],"type":"checkbox"}]'
 );
-CREATE TABLE submissions (id SERIAL PRIMARY KEY, form_id INTEGER REFERENCES forms(id), submission VARCHAR, ip_address VARCHAR);
+CREATE TABLE submissions (id SERIAL PRIMARY KEY, form_id INTEGER REFERENCES forms(id) ON DELETE CASCADE, submission VARCHAR, ip_address VARCHAR);
 CREATE TABLE refreshtokens(id SERIAL PRIMARY KEY, user_id INTEGER REFERENCES users(id), token VARCHAR);
 CREATE TABLE mail_codes(id SERIAL PRIMARY KEY, user_id INTEGER REFERENCES users(id), code INTEGER, UNIQUE(user_id, code))

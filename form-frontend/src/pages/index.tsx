@@ -89,7 +89,7 @@ export default function Home() {
         method: "POST",
         //credentials: "include",
         headers: {
-          'Content-Type': 'application/json', 
+          'Content-Type': 'application/json',
           'Access-Control-Allow-Credentials': 'true'
         },
         credentials: "include",
@@ -99,7 +99,7 @@ export default function Home() {
       if (updating && Number(formState.id)) {
         response = await fetch("http" + "://" + window.location.hostname + ":3003/forms/update/" + formState.id, options);
       } else {
-        response = await fetch("http" + "://" + window.location.hostname + ":3003/forms/" , options);
+        response = await fetch("http" + "://" + window.location.hostname + ":3003/forms/", options);
       }
 
       if (response.status == 200) {
@@ -184,7 +184,7 @@ export default function Home() {
     if (isClient) {
       if (isSignedIn()) {
         console.log('about to render head', savedFormsState)
-        return <FormHead toggleLoginForm={toggleLoginForm} savedFormsState={savedFormsState} formState={formState} setForm={setForm} />
+        return <FormHead toggleLoginForm={toggleLoginForm} savedFormsState={savedFormsState} deleteForm={deleteForm} formState={formState} setForm={setForm} />
       }
     }
 
@@ -200,7 +200,35 @@ export default function Home() {
 
     }
   }
+  const deleteForm = async () => {
+    if (!isSignedIn()) {
+      toggleLoginForm(true);
+      return;
+    }
+    if (Number(formState.id)) {
 
+      const options: any = {
+        method: "POST",
+        //credentials: "include",
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Credentials': 'true'
+        },
+        credentials: "include",
+      }
+      const response = await fetch(location.protocol + "//" + window.location.hostname + ":3003/forms/delete/" + formState.id, options);
+
+      if (response.status == 200) {
+        console.log("deleted form successfully. 200")
+        const formIndex = savedFormsState.findIndex((element: formObj) => element.id == formState.id)
+
+        const newSavedForms = [...savedFormsState]
+        newSavedForms.splice(formIndex, 1)
+        setSavedForms(newSavedForms);
+        clearForm();
+      }
+    }
+  }
   //Dom searchParams doesn't work as intended (params don't update), Nextjs useSearch hook works 
   const searchParams = useSearchParams()
 
@@ -209,7 +237,7 @@ export default function Home() {
       return <Responses formState={formState} />
     }
     else {
-      return <form className={styles.main} onSubmit={(e) =>{e.preventDefault()}}>
+      return <form className={styles.main} onSubmit={(e) => { e.preventDefault() }}>
 
         <input type="text" name="" id="" className={styles.formTitle} placeholder='Enter Form Title..' value={formState.title} onChange={(e) => {
           setForm({ ...formState, title: e.target.value })

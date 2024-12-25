@@ -31,6 +31,18 @@ export class formsStore {
     }
   }
 
+  async delete(id: number, user_id: number): Promise<form> {
+    try {
+      const conn = await client.connect();
+      const sql = "DELETE FROM forms WHERE id=($1) AND user_id=($2) RETURNING *";
+      const results = await conn.query(sql, [id, user_id]);
+      conn.release();
+      return results.rows[0];
+    } catch (err) {
+      throw new Error(`${err}`);
+    }
+  }
+
   async update(form: form): Promise<form> {
     try {
       const conn = await client.connect();

@@ -11,9 +11,12 @@ const FormHead = (props: {
     setForm: Dispatch<SetStateAction<formObj>>;
     formState: formObj;
     savedFormsState: Array<any>;
+    deleteForm: any
 }) => {
     console.log('inside formhead savedFroms', props.savedFormsState)
     const [isClient, setIsClient] = useState(false)
+
+    const [showDeletePopup, setDeletePopup] = useState(false);
 
     useEffect(() => {
         //setIsClient(true)
@@ -54,12 +57,24 @@ const FormHead = (props: {
             {renderSavedForms()}
         </select>
     }
+    const renderDeletePopup = () => {
+        if (showDeletePopup && props.formState.id) {
+            return <div className={styles.popupOverlay}>
+                <div className={styles.popup}>
+                    <p className={styles.popupText}>Delete Form?</p>
+                    <button className={styles.confirmButton} onClick={() => { setDeletePopup(false); props.deleteForm(); }}>Confirm</button>
+                    <button className={styles.cancelButton} onClick={() => setDeletePopup(false)}>Cancel</button>
+                </div>
+            </div>
+        }
+    }
     return (
         <section className={styles.formHeadWrapper}>
 
             {renderSelect()}
+            {renderDeletePopup()}
             <div className={styles.headBtnsWrapper}>
-                <input type="button" value="MAKE A COPY" className={styles.headButton} />
+                <input type="button" value="DELETE FORM" className={styles.headButton} id={styles.deleteButton} onClick={() => setDeletePopup(true)} />
                 <input type="button" value="FORM" className={styles.headButton} onClick={() => {
                     if (cookieFuncs.hasRefreshToken()) {
                         const searchParams = new URLSearchParams(window.location.search);
