@@ -133,6 +133,7 @@
     font-weight: 750;
     border: none;
     cursor: pointer;
+    margin-bottom:0.5rem;
 }
 
 .signinSubmit:focus, .signinSubmit:hover {

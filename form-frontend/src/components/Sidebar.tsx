@@ -23,11 +23,11 @@ const Sidebar = (props: { formState: formObj, saveForm: any, clearForm: any, isL
   const renderSaveBtn = () => {
     if (isClient && props.formState.id) {
       return <input type="submit" value="SAVE CHANGES" className={styles.sidebarButton} id={styles.saveBtn} onClick={e=>{
-        props.saveForm(true)
+        if(props.formState.title)props.saveForm(true)
       }}/>
     }
     else return <input type="submit" value="SAVE FORM" className={styles.sidebarButton} id={styles.saveBtn} onClick={e=>{
-      props.saveForm(false);
+      if(props.formState.title)props.saveForm(false);
     }} />
   }
   

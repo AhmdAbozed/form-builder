@@ -110,6 +110,12 @@ export default function Home() {
         console.log(response)
         const newForm = await response.json()
         console.log(newForm)
+        
+        //setForm to cause sidebar to show save changes instead of save form after creating it  
+        if(!updating){
+          newForm.form = JSON.parse(newForm.form)
+          setForm(newForm)
+        }
         const oldFormIndex = savedFormsState.findIndex((element: formObj) => element.id == newForm.id)
         const newSavedForms = [...savedFormsState]
         if (oldFormIndex > -1) {
@@ -118,8 +124,7 @@ export default function Home() {
           newSavedForms.push(newForm)
         }
         setSavedForms(newSavedForms)
-
-        //window.location.reload()
+        
       }
       else {
         toggleLoginForm(true);

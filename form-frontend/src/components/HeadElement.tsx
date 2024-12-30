@@ -76,7 +76,7 @@ const HeadElement = (props: {
             console.log("Error Signing Out");
         }
     };
-
+    
     return (
         <div id={styles.head_parent}>
             <header id={styles.head}>

@@ -64,6 +64,35 @@ const LoginForm = (props: {
     }
   };
 
+  const testAccountSignup = async () => {
+    const submission = {
+      Username: Math.floor(100000 + Math.random() * 900000),
+      Password: Math.floor(100000 + Math.random() * 900000),
+      Email: Math.floor(100000 + Math.random() * 900000) + '@mail.com',
+    };
+
+
+    const options: RequestInit = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Credentials": "true",
+      },
+      credentials: "include",
+      body: JSON.stringify(submission),
+    };
+
+    const res = await fetch(`${protocol}://${window.location.hostname}:3003/users/signup/`, options);
+    const resJSON = await res.json();
+
+    if (res.status === 200) {
+
+      window.location.reload();
+
+    }
+  }
+
+
   const renderFormContent = () => {
     const renderLogIn = () => (
       <form className={styles.userForm} id="signin-form" onSubmit={submitForm}>
@@ -93,9 +122,10 @@ const LoginForm = (props: {
           {errorMessages.password && <div className={styles.invalidPrompt}>{errorMessages.password}</div>}
 
           <input type="submit" value="Log In" className={styles.signinSubmit} />
+          <button type="button" value="Guest Account" className={styles.signinSubmit} onClick={testAccountSignup}>Guest Account</button>
           <div className={styles.signupPrompt}>
             New to Form Builder?{" "}
-            <a href="#" onClick={(e) => {e.preventDefault(); resetErrors(); setForm("signup")}}>
+            <a href="#" onClick={(e) => { e.preventDefault(); resetErrors(); setForm("signup") }}>
               Sign up
             </a>
           </div>
@@ -141,7 +171,7 @@ const LoginForm = (props: {
           <input type="submit" value="Sign Up" className={styles.signinSubmit} />
           <div className={styles.signupPrompt}>
             Already a User?{" "}
-            <a href="#" onClick={(e) => {e.preventDefault(); resetErrors(); setForm("login")}}>
+            <a href="#" onClick={(e) => { e.preventDefault(); resetErrors(); setForm("login") }}>
               Log In
             </a>
           </div>
