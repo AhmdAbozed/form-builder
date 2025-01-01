@@ -77,10 +77,11 @@
   #saveBtn {
     width: 60%;
   }
-  .sidebarButton{
-    
-  min-width: 5rem;
-  font-size: x-small;
+
+  .sidebarButton {
+
+    min-width: 5rem;
+    font-size: x-small;
   }
 }
 
@@ -110,25 +111,36 @@
   margin-left: 1rem;
   align-content: center;
 }
-.mobileDisplay{
+
+.mobileDisplay {
   display: none;
 }
-@media (max-width: 550px) {
-.mobileDisplay{
-  display: block;
-  grid-area: l;
-  bottom: 0;
-  position: relative;
-  margin-top: auto;
-  transform: translateY(3rem);
-  max-width: 12rem;
+
+#hidden {
+  display: none;
 }
 
+@media (max-width: 550px) {
+  .mobileDisplay {
+    display: block;
+    grid-area: l;
+    bottom: 0;
+    position: relative;
+    margin-top: auto;
+    transform: translateY(6rem);
+    max-width: 18rem;
+    height: 5rem;
+  }
+  .liveCheckWrapper{
+    margin-left: 0.5rem;
+  }
 }
+
 .checkboxLabel {
   margin-left: 0.3rem;
   font-size: large;
 }
-.liveLink{
+
+.liveLink {
   margin-left: 1rem;
 }

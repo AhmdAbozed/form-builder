@@ -261,7 +261,7 @@ export default function Home() {
 
   const renderBottomSidebar = () => {
     if (!(searchParams.get('section') === "responses")) {
-      return <BottomSidebar saveForm={saveForm} clearForm={clearForm} />
+      return <BottomSidebar saveForm={saveForm} clearForm={clearForm} formState={formState} />
     }
   }
   return (

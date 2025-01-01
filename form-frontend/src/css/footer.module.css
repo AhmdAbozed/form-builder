@@ -1,0 +1,48 @@
+/* Footer.module.css */
+.footer {
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    background: linear-gradient(0deg, rgb(25 36 54), rgb(25 37 55) 50%, rgb(25 36 55));
+    border-top: 1px solid #ddd;
+    padding: 0.5rem 0;
+    z-index: 99;
+  }
+  
+  .githubLink {
+    text-decoration: none;
+    margin: 0 0.2rem 0 0;
+  }
+  .mainWrapper{
+  
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+  }
+  .githubLogo {
+    width: 24px;
+    height: 24px;
+    vertical-align: middle;
+    background-size: cover;
+    background-image: url("../../public/resources/github.svg");
+  }
+
+  .linkedinLogo {
+    width: 24px;
+    height: 24px;
+    vertical-align: middle;
+    background-size: cover;
+    background-image: url("../../public/resources/linkedin.svg");
+  }
+  
+  .rights {
+    margin: auto 0;
+    font-size: 18px;
+    color: white;
+  }
+  @media (max-width: 450px){
+    .rights{
+      font-size: 16px;
+    }
+  }

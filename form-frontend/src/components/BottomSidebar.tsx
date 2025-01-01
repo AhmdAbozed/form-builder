@@ -1,8 +1,9 @@
 "use client"
+import { formObj } from '@/pages'
 import styles from '../css/bottomSidebar.module.css'
 import '../css/util/customCheckbox.module.css'
 import { useEffect, useState } from 'react'
-const BottomSidebar = (props: { saveForm: any, clearForm: any }) => {
+const BottomSidebar = (props: { formState: formObj, saveForm: any, clearForm: any }) => {
   const [isClient, setIsClient] = useState(false)
   const [inputsFlagState, setInputsFlag] = useState(false)
 
@@ -19,11 +20,16 @@ const BottomSidebar = (props: { saveForm: any, clearForm: any }) => {
   }
 
   const renderSaveBtn = () => {
-    if (isClient) {
-      return <input type="submit" value="SAVE & REPLACE" className={styles.sidebarButton} id={styles.saveBtn} />
+    if (isClient && props.formState.id) {
+      return <input type="submit" value="SAVE CHANGES" className={styles.sidebarButton} id={styles.saveBtn} onClick={e=>{
+        if(props.formState.title)props.saveForm(true)
+      }}/>
     }
-    else return <input type="submit" value="SAVE FORM" className={styles.sidebarButton} id={styles.saveBtn} />
+    else return <input type="submit" value="SAVE FORM" className={styles.sidebarButton} id={styles.saveBtn} onClick={e=>{
+      if(props.formState.title)props.saveForm(false);
+    }} />
   }
+  
   const renderSidebarInputs = () => {
     if (inputsFlagState) {
       return <section id={styles.draggablesBody}>
